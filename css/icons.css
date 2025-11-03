@@ -1,0 +1,5 @@
+.task-btn svg{width:20px;height:20px;display:block;pointer-events:none}
+.task-btn[data-type="jerrican"] svg .water{fill:#3b82f6;transition:.15s}
+.task-btn.active[data-type="jerrican"] svg .water{fill:#60a5fa}
+.dark .task-btn[data-type="jerrican"] svg .water{fill:#3b82f6}
+.dark .task-btn.active[data-type="jerrican"] svg .water{fill:#93c5fd}

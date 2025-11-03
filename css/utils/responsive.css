@@ -1,0 +1,68 @@
+/* ========================================
+   Responsive & Mobile - התאמות נייד
+   ⚠️ קובץ זה מכיל רק הגדרות כלליות - ללא עיצובים ספציפיים לעמודים
+   ======================================== */
+
+/* PWA Optimizations */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  nav {
+    margin-bottom: 0.5rem;
+  }
+  
+  .container {
+    padding-top: 1rem;
+  }
+  
+  main {
+    margin-top: 0;
+    padding-top: 0.5rem;
+  }
+}
+
+/* iPhone PWA: צמצום רווח בין סרגל ניווט לקומפוננטת הערות מהירות */
+@media (display-mode: standalone) and (max-width: 480px) {
+  nav { margin-bottom: 0.25rem !important; }
+  .container { padding-top: 0.25rem !important; }
+  #quick-comment-bar-container, .quickbar { margin-top: 0 !important; }
+}
+@supports(padding: env(safe-area-inset-top)) {
+  @media (display-mode: standalone) and (max-width: 480px) {
+    body { padding-top: calc(env(safe-area-inset-top) + 4px) !important; }
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  button:not(.admin-nav-tab) {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ========================================
+   ⚠️ הערה חשובה:
+   כל עיצוב ספציפי לעמוד (auto-grid, nav-tab, וכו') 
+   מוגדר בקובץ ה-CSS של העמוד עצמו
+   ======================================== */

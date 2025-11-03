@@ -1,0 +1,145 @@
+/* ========================================
+   אנימציות - Animations
+   ======================================== */
+
+/* Drag and Drop Animations */
+.arrival-row.dragging {
+  opacity: 0.8;
+  transform: rotate(2deg) scale(1.02);
+  background: #1e40af !important;
+  border: 2px dashed #3b82f6;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: all 0.2s ease;
+}
+
+.arrival-row.drag-target {
+  background: #1e40af !important;
+  border: 2px solid #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+}
+
+.arrival-row.drag-over-before {
+  border-top: 3px solid #3b82f6;
+}
+
+.arrival-row.drag-over-after {
+  border-bottom: 3px solid #3b82f6;
+}
+
+/* Drag Handle */
+.drag-handle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0891b2 !important;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  background: transparent !important;
+  border: none !important;
+  width: auto !important;
+  height: auto !important;
+  box-shadow: none !important;
+}
+
+.drag-handle:hover {
+  background: transparent !important;
+  color: #0e7490 !important;
+  box-shadow: none !important;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Editing Order State */
+.editing-order .arrival-row {
+  background: #1e293b !important;
+  border: 1px solid #334155;
+  margin-bottom: 2px;
+  transition: all 0.2s ease;
+  position: relative;
+  padding-right: 50px !important;
+}
+
+.editing-order .arrival-row:hover {
+  background: #334155 !important;
+  border-color: #0891b2;
+  box-shadow: 0 2px 4px rgba(8,145,178,0.1);
+}
+
+.editing-order .arrival-row.dragging {
+  background: #f0f9ff !important;
+  border-color: #0891b2;
+  box-shadow: 0 4px 12px rgba(8,145,178,0.2);
+  transform: scale(1.02);
+}
+
+/* Smooth transitions for all rows during reorder */
+.editing-order .arrival-row:not(.dragging) {
+  transition: transform 0.3s ease, margin 0.3s ease, box-shadow 0.2s ease;
+}
+
+/* Button Hover Effects */
+button:not(.nav-tab):not(.heat-btn):not(.heat-bar-btn):not(.nav-heat-btn):not(.runner-btn):not(.comment-btn):not(.task-btn):not(#theme-toggle-btn):not(#edit-details-btn):not(.avatar-btn-fixed):not(.qc-sendBtn):not(.qc-micBtn):not(.qc-group-trigger):not(.admin-nav-tab) {
+  transition: transform .12s ease, box-shadow .12s ease, background-color .15s ease;
+}
+
+button:hover:not(:disabled):not(.nav-tab):not(.heat-btn):not(.heat-bar-btn):not(.nav-heat-btn):not(.runner-btn):not(.comment-btn):not(.task-btn):not(#theme-toggle-btn):not(#edit-details-btn):not(.avatar-btn-fixed):not(.qc-sendBtn):not(.qc-micBtn):not(.qc-group-trigger):not(.admin-nav-tab) {
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled):not(.nav-tab):not(.heat-btn):not(.heat-bar-btn):not(.nav-heat-btn):not(.runner-btn):not(.comment-btn):not(.task-btn):not(#theme-toggle-btn):not(#edit-details-btn):not(.avatar-btn-fixed):not(.qc-sendBtn):not(.qc-micBtn):not(.qc-group-trigger):not(.admin-nav-tab) {
+  transform: translateY(1px) scale(.995);
+}
+
+/* Fade In/Out */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Pulse Effect */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

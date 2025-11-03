@@ -1,0 +1,767 @@
+/* ========================================
+   עמוד Crawling Comments - זחילה קבוצתית
+   ======================================== */
+
+/* Crawling Group Layout */
+.crawling-group-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* NEW: Sack Section Wrapper - מעטפת לכל הסקשן */
+.sack-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* NEW: Sack Section Title - כותרת פשוטה להסבר */
+.sack-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.dark .sack-section-title {
+  color: #9ca3af;
+}
+
+/* Sack Carriers Section */
+.sack-carriers-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.dark .sack-carriers-section {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.dark .section-title {
+  color: #f1f5f9;
+}
+
+/* Sack Carrier Grid */
+#sack-carrier-container {
+  /* הוסר grid - זה יושב על .cs-grid-3min */
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 520px) {
+  #sack-carrier-container {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+    gap: 10px;
+  }
+}
+
+/* Sack Carrier Button - קארד קומפקטי בגודל קבוע */
+.runner-sack-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 95px;
+  height: 85px;
+  padding: 6px 6px;
+  background: #e5e7eb;
+  color: #111827;
+  border: 2px solid rgba(0, 0, 0, .12);
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+  user-select: none;
+  position: relative;
+  overflow: visible;
+}
+
+@media (max-width: 520px) {
+  .runner-sack-btn {
+    width: 85px;
+    height: 75px;
+    padding: 5px 4px;
+    gap: 1px;
+  }
+}
+
+.runner-sack-btn:hover {
+  background: #d1d5db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, .15);
+}
+
+.runner-sack-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+}
+
+.dark .runner-sack-btn {
+  background: #374151;
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, .15);
+}
+
+.dark .runner-sack-btn:hover {
+  background: #4b5563;
+}
+
+/* Sack Button - Selected State */
+.runner-sack-btn.selected {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), 0 2px 8px rgba(0, 0, 0, .1);
+}
+
+.runner-sack-btn.selected:hover {
+  background: #a7f3d0 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3), 0 4px 12px rgba(0, 0, 0, .15);
+}
+
+.dark .runner-sack-btn.selected {
+  background: #065f46 !important;
+  border-color: #10b981 !important;
+  color: #d1fae5 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3), 0 2px 8px rgba(0, 0, 0, .2);
+}
+
+.dark .runner-sack-btn.selected:hover {
+  background: #047857 !important;
+}
+
+/* Disabled State */
+.runner-sack-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.runner-sack-btn:disabled:hover {
+  background: #e5e7eb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+}
+
+.dark .runner-sack-btn:disabled:hover {
+  background: #374151;
+}
+
+/* Mini Sack Time Display */
+.runner-sack-btn .mini-sack-time {
+  font-size: 13px;
+  line-height: 1;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, .05);
+  border-radius: 5px;
+  z-index: 1;
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 520px) {
+  .runner-sack-btn .mini-sack-time {
+    font-size: 12px;
+    padding: 2px 6px;
+    bottom: 5px;
+  }
+}
+
+/* הסתרה רק אם לא נבחר ואין לו זמן שמור */
+.runner-sack-btn:not(.selected):not(.has-sack-time) .mini-sack-time {
+  visibility: hidden;
+}
+
+.runner-sack-btn.selected .mini-sack-time {
+  color: #065f46;
+  background: rgba(6, 95, 70, .15);
+  font-weight: 700;
+}
+
+.dark .runner-sack-btn .mini-sack-time {
+  color: #9ca3af;
+  background: rgba(255, 255, 255, .08);
+}
+
+.dark .runner-sack-btn.selected .mini-sack-time {
+  color: #a7f3d0;
+  background: rgba(167, 243, 208, .2);
+}
+
+/* Instructions */
+.crawling-instructions {
+  padding: 16px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  color: #78350f;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.dark .crawling-instructions {
+  background: #78350f;
+  border-color: #fbbf24;
+  color: #fef3c7;
+}
+
+/* Continue Button */
+.continue-crawling-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 24px;
+}
+
+.continue-crawling-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59,130,246,.3);
+}
+
+.continue-crawling-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sack-section-title {
+    font-size: 17px;
+    padding: 10px 16px;
+  }
+  
+  .sack-carriers-section {
+    padding: 16px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .runner-sack-btn {
+    min-height: 60px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 520px) {
+  .sack-section-title {
+    font-size: 15px;
+    padding: 8px 12px;
+    letter-spacing: 0.2px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sack-carriers-section {
+    padding: 16px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .runner-sack-btn {
+    min-height: 60px;
+    font-size: 18px;
+  }
+}
+
+/* UPDATED: Compact 3-column grid with fixed card size */
+.cs-grid-3min {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(95px, 95px));
+  gap: 10px;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .cs-grid-3min {
+    grid-template-columns: repeat(auto-fill, minmax(95px, 95px));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .cs-grid-3min {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 85px));
+    gap: 8px;
+  }
+}
+
+/* Arrival Header */
+.arrival-header {
+  padding: 4px 6px;
+  color: #6b7280;
+}
+
+/* General Comment Input (hidden - replaced by button) */
+.gc-input {
+  width: 100%;
+  height: 34px;
+  line-height: 34px;
+  font-size: 13px;
+  padding: 0 8px;
+  text-align: right;
+  border: 1px solid rgba(0, 0, 0, .15);
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  display: none;
+}
+
+.dark .gc-input {
+  background: rgba(255, 255, 255, .06);
+  color: inherit;
+  border-color: rgba(255, 255, 255, .18);
+}
+
+/* General Comment Button */
+.gc-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 38px;
+  padding: 6px 10px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .15s background, .15s border-color;
+  line-height: 1.2;
+  text-align: right;
+  direction: rtl;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gc-open-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.gc-open-btn.has-text {
+  background: #eefdf6;
+  color: #065f46;
+  border-color: #059669;
+}
+
+.gc-open-btn.has-text:hover {
+  background: #daf8eb;
+}
+
+.dark .gc-open-btn {
+  background: #374151;
+  color: #e2e8f0;
+  border-color: #4b5563;
+}
+
+.dark .gc-open-btn:hover {
+  background: #425065;
+  border-color: #64748b;
+}
+
+.dark .gc-open-btn.has-text {
+  background: #065f46;
+  color: #ecfdf5;
+  border-color: #047857;
+}
+
+.dark .gc-open-btn.has-text:hover {
+  background: #056c41;
+}
+
+/* === מודאל הערה בראש המסך === */
+.gc-modal-top-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: none;
+  background: rgba(0, 0, 0, .45);
+}
+
+.gc-modal-top {
+  position: absolute;
+  top: max(72px, env(safe-area-inset-top, 20px) + 52px);
+  right: 50%;
+  transform: translateX(50%);
+  width: clamp(300px, 92vw, 580px);
+  background: #fff;
+  color: #111827;
+  border-radius: 18px;
+  padding: 18px 18px 14px;
+  box-shadow: 0 8px 28px -6px rgba(0, 0, 0, .45);
+  animation: gcSlideDown .28s ease;
+}
+
+@keyframes gcSlideDown {
+  from {
+    opacity: 0;
+    transform: translate(50%, -10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(50%, 0);
+  }
+}
+
+.dark .gc-modal-top {
+  background: #1f2937;
+  color: #f1f5f9;
+}
+
+.gc-modal-top textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #111827;
+  outline: none;
+  direction: rtl;
+}
+
+.gc-modal-top textarea:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 1px #059669;
+}
+
+.dark .gc-modal-top textarea {
+  background: #374151;
+  border-color: #4b5563;
+  color: #f1f5f9;
+}
+
+.dark .gc-modal-top textarea:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 1px #10b981;
+}
+
+.gc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gc-modal-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.gc-close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.gc-close:hover {
+  background: rgba(0, 0, 0, .06);
+}
+
+.dark .gc-close:hover {
+  background: rgba(255, 255, 255, .08);
+}
+
+.gc-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.gc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: .15s;
+}
+
+.gc-btn-save {
+  background: #059669;
+  color: #fff;
+}
+
+.gc-btn-save:hover {
+  background: #047857;
+}
+
+.gc-btn-cancel {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.gc-btn-cancel:hover {
+  background: #d1d5db;
+}
+
+.dark .gc-btn-cancel {
+  background: #374151;
+  color: #e2e8f0;
+}
+
+.dark .gc-btn-cancel:hover {
+  background: #425065;
+}
+
+.gc-btn-mic {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.gc-btn-mic:hover {
+  background: #e5e7eb;
+}
+
+.gc-btn-mic.recording {
+  background: #dc2626;
+  color: #fff;
+}
+
+.dark .gc-btn-mic {
+  background: #374151;
+  color: #e2e8f0;
+}
+
+.dark .gc-btn-mic:hover {
+  background: #425065;
+}
+
+.dark .gc-btn-mic.recording {
+  background: #b91c1c;
+}
+
+/* === בועת אינדיקציית הערות – בשורה של זמן הסחיבה === */
+.runner-sack-btn .comment-mini-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+  .runner-sack-btn .comment-mini-indicator {
+    width: 24px;
+    height: 24px;
+    top: 3px;
+    left: 3px;
+  }
+}
+
+.runner-sack-btn .comment-mini-indicator:hover {
+  transform: scale(1.15);
+}
+
+.runner-sack-btn .comment-mini-indicator .bubble-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.runner-sack-btn .comment-mini-indicator .bubble-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .2));
+}
+
+.runner-sack-btn .comment-mini-indicator .bubble-fill {
+  transition: fill .25s;
+}
+
+.runner-sack-btn .comment-mini-indicator .cm-count {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
+  color: #fff;
+}
+
+.runner-sack-btn .comment-mini-indicator.comment-level-0 .cm-count {
+  display: none;
+}
+
+.runner-sack-btn .comment-mini-indicator.comment-level-0::after {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  font-size: 13px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
+  color: #fff;
+}
+
+/* מספר כתף - פינה ימנית עליונה */
+.runner-sack-btn > span:not(.comment-mini-indicator):not(.mini-sack-time):not(.time-and-comment-row) {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0;
+  z-index: 1;
+}
+
+@media (max-width: 520px) {
+  .runner-sack-btn > span:not(.comment-mini-indicator):not(.mini-sack-time):not(.time-and-comment-row) {
+    font-size: 20px;
+    top: 5px;
+    right: 5px;
+  }
+}
+
+/* שורת זמן והערות - בשורה אחת */
+.runner-sack-btn .time-and-comment-row {
+  display: none;
+}
+
+/* רמות צבע – Light Mode */
+.runner-sack-btn .comment-mini-indicator.level-0 .bubble-fill { fill: #fecaca; }
+.runner-sack-btn .comment-mini-indicator.level-0 { color: #b91c1c; }
+
+.runner-sack-btn .comment-mini-indicator.level-1 .bubble-fill { fill: #fed7aa; }
+.runner-sack-btn .comment-mini-indicator.level-1 { color: #9a3412; }
+
+.runner-sack-btn .comment-mini-indicator.level-2 .bubble-fill { fill: #fde047; }
+.runner-sack-btn .comment-mini-indicator.level-2 { color: #854d0e; }
+
+.runner-sack-btn .comment-mini-indicator.level-3 .bubble-fill { fill: #fef9c3; }
+.runner-sack-btn .comment-mini-indicator.level-3 { color: #713f12; }
+
+.runner-sack-btn .comment-mini-indicator.level-4 .bubble-fill { fill: #ecfccb; }
+.runner-sack-btn .comment-mini-indicator.level-4 { color: #3f6212; }
+
+.runner-sack-btn .comment-mini-indicator.level-5 .bubble-fill { fill: #e7fef3; }
+.runner-sack-btn .comment-mini-indicator.level-5 { color: #166534; }
+
+/* רמות צבע – Dark Mode */
+.dark .runner-sack-btn .comment-mini-indicator.level-0 .bubble-fill { fill: #641414; }
+.dark .runner-sack-btn .comment-mini-indicator.level-0 { color: #fecaca; }
+
+.dark .runner-sack-btn .comment-mini-indicator.level-1 .bubble-fill { fill: #5a250c; }
+.dark .runner-sack-btn .comment-mini-indicator.level-1 { color: #fed7aa; }
+
+.dark .runner-sack-btn .comment-mini-indicator.level-2 .bubble-fill { fill: #5a3a05; }
+.dark .runner-sack-btn .comment-mini-indicator.level-2 { color: #fde68a; }
+
+.dark .runner-sack-btn .comment-mini-indicator.level-3 .bubble-fill { fill: #55520a; }
+.dark .runner-sack-btn .comment-mini-indicator.level-3 { color: #fef08a; }
+
+.dark .runner-sack-btn .comment-mini-indicator.level-4 .bubble-fill { fill: #25420a; }
+.dark .runner-sack-btn .comment-mini-indicator.level-4 { color: #d9f99d; }
+
+.dark .runner-sack-btn .comment-mini-indicator.level-5 .bubble-fill { fill: #094226; }
+.dark .runner-sack-btn .comment-mini-indicator.level-5 { color: #bbf7d0; }
+
+/* גרסת comment-level (הכפול) */
+.comment-mini-indicator.comment-level-0 .bubble-fill { fill: #fecaca; }
+.comment-mini-indicator.comment-level-1 .bubble-fill { fill: #fed7aa; }
+.comment-mini-indicator.comment-level-2 .bubble-fill { fill: #fde047; }
+.comment-mini-indicator.comment-level-3 .bubble-fill { fill: #fef9c3; }
+.comment-mini-indicator.comment-level-4 .bubble-fill { fill: #ecfccb; }
+.comment-mini-indicator.comment-level-5 .bubble-fill { fill: #e7fef3; }
+
+.dark .comment-mini-indicator.comment-level-0 .bubble-fill { fill: #641414; }
+.dark .comment-mini-indicator.comment-level-1 .bubble-fill { fill: #5a250c; }
+.dark .comment-mini-indicator.comment-level-2 .bubble-fill { fill: #5a3a05; }
+.dark .comment-mini-indicator.comment-level-3 .bubble-fill { fill: #55520a; }
+.dark .comment-mini-indicator.comment-level-4 .bubble-fill { fill: #25420a; }
+.dark .comment-mini-indicator.comment-level-5 .bubble-fill { fill: #094226; }
+
+/* לחצן הערות בטבלה */
+#arrival-list .table-comment-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#arrival-list .table-comment-btn.comment-btn-empty {
+  opacity: .7;
+}

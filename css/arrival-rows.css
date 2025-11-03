@@ -1,0 +1,447 @@
+/* ==================================================
+   עיצוב רכיב רשימת הגעות (Arrival Rows Component)
+   ================================================== */
+
+/* איפוס בסיסי */
+.arrival-section,
+.arrival-header,
+.arrival-row,
+.arrival-section *,
+.arrival-header *,
+.arrival-row * {
+  box-sizing: border-box;
+}
+
+/* CSS Variables for Light/Dark Mode */
+:root {
+  --arrival-bg:#ffffff;
+  --arrival-border:#e2e8f0;
+  --arrival-header-bg:#f8fafc;
+  --arrival-header-text:#475569;
+  --arrival-row-bg:#ffffff;
+  --arrival-row-hover-bg:#f1f5f9;
+  --arrival-row-text:#0f172a;
+  --arrival-static-bg:#e2e8f0;
+  --arrival-static-text:#334155;
+  --arrival-drag-hover-bg:#f1f5f9;
+  --arrival-dragging-bg:#e0f2fe;
+  --arrival-drag-border:#0284c7;
+}
+.dark {
+  --arrival-bg:#1e293b;
+  --arrival-border:#334155;
+  --arrival-header-bg:#0f172a;
+  --arrival-header-text:#94a3b8;
+  --arrival-row-bg:#1e293b;
+  --arrival-row-hover-bg:#334155;
+  --arrival-row-text:#ffffff;
+  --arrival-static-bg:#64748b;
+  --arrival-static-text:#ffffff;
+  --arrival-drag-hover-bg:#334155;
+  --arrival-dragging-bg:#1e40af;
+  --arrival-drag-border:#3b82f6;
+}
+
+/* מכולה ראשית */
+.arrival-section {
+  background: var(--arrival-bg);
+  border: 1px solid var(--arrival-border);
+  border-radius: 12px;
+  overflow: hidden;
+  direction: rtl;
+  margin: 20px 0;
+  width: 100%;
+  display: block;
+  font-family: inherit;
+  /* variable for columns so header+rows always match */
+  /* ברירת מחדל: עם מיקום */
+  --arrival-cols: 60px 100px 1fr 130px;
+}
+.arrival-section.hide-comments { /* no comments column */
+  --arrival-cols: 60px 100px 130px;
+}
+.arrival-section.hide-rank { /* no rank column - for crawling group page */
+  --arrival-cols: 100px 1fr 130px;
+}
+.arrival-section.hide-comments.hide-rank { /* both hidden */
+  --arrival-cols: 100px 130px;
+}
+/* OLD: body.editing-order .arrival-section rule was redundant, rely on .hide-comments class */
+
+/* כותרת הטבלה */
+.arrival-header {
+  background: var(--arrival-header-bg);
+  color: var(--arrival-header-text);
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: var(--arrival-cols);
+  align-items: center;
+  column-gap: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 1px solid var(--arrival-border);
+  direction: rtl;
+}
+
+/* הסרת העמודה השמאלית (לא בשימוש בפועל) */
+.arrival-header .arrival-header-position { display: none; }
+
+.arrival-header .h-cell.shoulder { width: 80px; text-align: center; flex-shrink: 0; margin-left: 0; }
+.arrival-header .h-cell.center { flex: 1; text-align: center; }
+.arrival-header .h-cell.time { width: 100px; text-align: center; flex-shrink: 0; }
+
+/* עמודת מיקום סטטית - עיצוב מינימלי */
+.arrival-header .h-cell.static-position {
+  width: 60px;
+  text-align: center;
+  flex-shrink: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  color: var(--arrival-header-text);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* הסתרת עמודת מיקום כאשר יש מחלקת hide-rank */
+.arrival-section.hide-rank .h-cell.static-position,
+.arrival-section.hide-rank .static-position {
+  display: none !important;
+}
+
+/* שורות התוכן */
+.arrival-row {
+  background: var(--arrival-row-bg);
+  color: var(--arrival-row-text);
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: var(--arrival-cols);
+  align-items: center;
+  column-gap: 12px;
+  border-bottom: 1px solid var(--arrival-border);
+  min-height: 60px;
+  direction: rtl;
+  transition: background-color 0.2s ease;
+}
+.arrival-row:hover { background: var(--arrival-row-hover-bg); }
+.arrival-row:last-child { border-bottom: none; }
+
+/* הסרת העמודה השמאלית */
+.arrival-position { display: none; }
+
+.shoulder-cell { 
+  width: 100px; 
+  text-align: center; 
+  font-size: 16px; 
+  font-weight: 600; 
+  color: var(--arrival-row-text); 
+  flex-shrink: 0;
+}
+
+.comment-cell { /* grid cell */
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  padding: 0;
+}
+
+/* Hide comments column when class applied */
+.arrival-section.hide-comments .comment-cell,
+.arrival-section.hide-comments .h-cell.comment { display: none !important; }
+
+.time-cell { 
+  width: 130px; 
+  text-align: center; 
+  font-size: 14px; 
+  font-weight: 600; 
+  color: var(--arrival-row-text); 
+  font-family: monospace; 
+  flex-shrink: 0;
+}
+
+/* תא מיקום סטטי - עיצוב מינימלי */
+.static-position {
+  width: 60px;
+  height: 26px;
+  background: var(--arrival-static-bg);
+  color: var(--arrival-static-text);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  border: none;
+  box-shadow: none;
+  position: static;
+}
+.static-position::before { display: none; }
+
+/* ==================================================
+   מצב עריכת סדר (פושט) - שימוש במחלקה hide-comments בלבד להסתרת הערות
+   ================================================== */
+
+/* במצב עריכה - התאמת רשת העמודות להסתיר הערות */
+.arrival-section.editing-order {
+  --arrival-cols: 60px 100px 130px; /* מיקום + כתף + זמן (הערות מוסתרות) */
+}
+.arrival-section.editing-order.hide-rank {
+  --arrival-cols: 100px 130px; /* רק כתף + זמן (אין מיקום, אין הערות) */
+}
+
+.editing-order .arrival-row { background: var(--arrival-row-bg); }
+.editing-order .arrival-row:hover { background: var(--arrival-row-hover-bg); }
+
+/* שמירה על עיצוב עמודת המיקום במצב עריכה */
+.editing-order .arrival-row .static-position { background: var(--arrival-static-bg); border: none; animation: none; }
+
+/* כפתור גרירה - הגדרה אחת (הוסר הכפל) */
+.drag-handle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0891b2 !important;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  background: transparent !important;
+  border: none !important;
+  width: auto !important;
+  height: auto !important;
+  box-shadow: none !important;
+}
+.drag-handle:hover { background: transparent !important; color: #0e7490 !important; box-shadow: none !important; }
+.drag-handle:active { cursor: grabbing; background: transparent !important; box-shadow: none !important; }
+.drag-handle:focus { background: transparent !important; outline: none !important; box-shadow: none !important; }
+
+/* Edit mode styling improvements (שומרים כי תלוי ב-JS) */
+.arrival-list.editing-order .arrival-row { background: var(--arrival-row-bg) !important; border: 1px solid var(--arrival-border); margin-bottom: 2px; transition: all 0.2s ease; }
+.arrival-list.editing-order .arrival-row:hover { background: var(--arrival-drag-hover-bg) !important; border-color: var(--arrival-border); box-shadow: 0 2px 4px rgba(8,145,178,0.1); }
+.arrival-list.editing-order .arrival-row.dragging { background: var(--arrival-dragging-bg) !important; border-color: var(--arrival-drag-border) !important; box-shadow: 0 4px 12px rgba(8,145,178,0.2); transform: scale(1.02); }
+
+/* Drag over indicators */
+.arrival-row.drag-over-before { border-top: 3px solid var(--arrival-drag-border) !important; }
+.arrival-row.drag-over-after { border-bottom: 3px solid var(--arrival-drag-border) !important; }
+
+/* ==================================================
+   אנימציות גרירה
+   ================================================== */
+.arrival-row.dragging {
+  opacity: 0.8;
+  transform: rotate(2deg) scale(1.02);
+  background: var(--arrival-dragging-bg) !important;
+  border: 2px dashed var(--arrival-drag-border);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+.arrival-row.drag-target { background: var(--arrival-dragging-bg) !important; border: 2px solid var(--arrival-drag-border); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+.arrival-row.drag-over-before { border-top: 3px solid var(--arrival-drag-border); }
+.arrival-row.drag-over-after { border-bottom: 3px solid var(--arrival-drag-border); }
+
+/* ==================================================
+   התאמות למובייל
+   ================================================== */
+
+@media (max-width: 768px) {
+  .arrival-section { /* adjust variable instead of per-element grids */
+    --arrival-cols: 50px 85px 1fr 110px;
+  }
+  .arrival-section.hide-comments,
+  .arrival-section.editing-order { /* mobile no comments */
+    --arrival-cols: 50px 85px 110px;
+  }
+  .arrival-section.hide-rank { /* mobile no rank */
+    --arrival-cols: 85px 1fr 110px;
+  }
+  .arrival-section.hide-comments.hide-rank,
+  .arrival-section.editing-order.hide-rank { /* both hidden mobile */
+    --arrival-cols: 85px 110px;
+  }
+  
+  .arrival-header {
+    padding: 8px 12px;
+    font-size: 12px;
+    column-gap: 8px;
+  }
+  
+  .arrival-row {
+    padding: 8px 12px;
+    column-gap: 8px;
+    min-height: 50px;
+  }
+  
+  .arrival-position {
+    width: 40px;
+    height: 28px;
+    font-size: 13px;
+  }
+  
+  .shoulder-cell {
+    width: 85px;
+    font-size: 15px;
+  }
+  
+  .time-cell {
+    width: 110px;
+    font-size: 13px;
+  }
+  
+  .arrival-row .comment-btn {
+    height: 32px;
+    font-size: 12px;
+    padding: 6px 10px;
+    max-width: none;
+  }
+  
+  .drag-handle {
+    width: 45px;
+    height: 32px;
+    font-size: 13px;
+  }
+  
+  .editing-order .arrival-header::after {
+    width: 45px;
+  }
+  
+  .arrival-header .h-cell.static-position {
+    width: 50px;
+    font-size: 12px;
+  }
+  
+  .static-position {
+    width: 50px;
+    height: 24px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .arrival-section {
+    --arrival-cols: 45px 70px 1fr 100px;
+  }
+  .arrival-section.hide-comments,
+  .arrival-section.editing-order {
+    --arrival-cols: 45px 70px 100px;
+  }
+  .arrival-section.hide-rank {
+    --arrival-cols: 70px 1fr 100px;
+  }
+  .arrival-section.hide-comments.hide-rank,
+  .arrival-section.editing-order.hide-rank {
+    --arrival-cols: 70px 100px;
+  }
+  
+  .arrival-header {
+    padding: 6px 8px;
+    column-gap: 6px;
+  }
+  
+  .arrival-row {
+    padding: 6px 8px;
+    column-gap: 6px;
+  }
+  
+  .shoulder-cell {
+    width: 70px;
+    font-size: 14px;
+  }
+  
+  .time-cell {
+    width: 100px;
+    font-size: 12px;
+  }
+  
+  .arrival-row .comment-btn {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  
+  .static-position {
+    width: 45px;
+    height: 22px;
+    font-size: 11px;
+  }
+  
+  .arrival-header .h-cell.static-position {
+    width: 45px;
+    font-size: 11px;
+  }
+}
+
+/* הסתרת כותרת ההערות במצב עריכה - כלל עליון שעוקף הכל */
+/* BUG FIX: בעבר השתמשנו ב :nth-child(3) שבעת עריכה בלי עמודת הערות (hide-comments)
+   הפך את עמודת הזמן לעמודה שלישית ולכן הוסתרה. כעת נסיר את הכללים הישנים
+   ונשתמש בסלקטורים מבוססי מחלקות בלבד, ורק אם עמודת הערות קיימת. */
+/* הוסר: .editing-order .arrival-header > *:nth-child(3) ... וכל הוריאנטים */
+.arrival-section.editing-order:not(.hide-comments) .arrival-header .h-cell.comment { 
+  display: none !important; 
+  visibility: hidden !important; 
+  width: 0 !important; 
+  padding: 0 !important; 
+  margin: 0 !important; 
+  overflow: hidden !important; 
+}
+
+/* הסתרת עמודת ההערות במצב עריכה (שורות) */
+/* הוסר: .editing-order .arrival-row > *:nth-child(3) ... וכל הוריאנטים */
+.arrival-section.editing-order:not(.hide-comments) .arrival-row .comment-cell { 
+  display: none !important; 
+  visibility: hidden !important; 
+  width: 0 !important; 
+  padding: 0 !important; 
+  margin: 0 !important; 
+  overflow: hidden !important; 
+}
+
+.arrival-header-title {
+  background: var(--arrival-header-bg);
+  color: var(--arrival-row-text);
+  padding: 10px 16px 6px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--arrival-border);
+  direction: rtl;
+}
+
+/* יישור עקבי של כותרות ותאים – טיפול בבעיה שהכותרת 'הערות' זזה לימין ב‑RTL */
+.arrival-header .h-cell { 
+  text-align: center; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.arrival-header .h-cell.comment { text-align: center; }
+/* יישור תוכן התאים בשורות */
+.arrival-row .shoulder-cell,
+.arrival-row .time-cell { text-align:center; }
+.comment-cell { /* ensure flex centering */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+/* כשעמודת ההערות מוסתרת עדיין נשמור על מרכזיות */
+body.editing-order .arrival-header .h-cell,
+body.editing-order .arrival-row .shoulder-cell,
+body.editing-order .arrival-row .time-cell { text-align:center; }
+
+/* Visual feedback for drag operation */
+.editing-order .arrival-row {
+  position: relative;
+  padding-right: 50px !important; /* NEW: מקום לאייקון הגרירה */
+  transition: all 0.2s ease;
+}
+
+/* במצב עריכה - הכותרת צריכה גם padding ימני כמו השורות */
+.editing-order .arrival-header {
+  padding-right: 50px !important; /* מקום לאייקון הגרירה - מיושר עם השורות */
+}

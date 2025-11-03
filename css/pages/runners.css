@@ -1,0 +1,619 @@
+/* ========================================
+   עמוד Runners - ניהול קבוצה
+   ======================================== */
+
+/* Evaluation Info - New unified layout */
+#evaluation-info { position:relative; background:linear-gradient(135deg,#ffffff 0%,#f6f9ff 60%,#eef3f9 100%)!important; border:1px solid #cfe2ff!important; border-radius:18px!important; padding:.75rem .85rem!important; box-shadow:0 4px 14px rgba(30,64,175,.08),0 1px 3px rgba(0,0,0,.05)!important; display:flex; flex-direction:column; gap:.75rem; }
+#evaluation-info .eval-title { margin:0; text-align:center; font-size:1.05rem; font-weight:700; letter-spacing:.5px; color:#0f3d75; }
+#evaluation-info .eval-pills { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.55rem; }
+#evaluation-info .eval-pill { position:relative; background:#ffffff; border:1px solid #dbeafe; border-radius:12px; padding:.5rem .6rem .45rem; display:flex; flex-direction:column; gap:.35rem; min-height:60px; box-shadow:0 1px 3px rgba(0,0,0,.04); transition:.25s; }
+#evaluation-info .eval-pill:hover { box-shadow:0 3px 10px rgba(59,130,246,.15); transform:translateY(-2px); }
+#evaluation-info .pill-label { font-size:.55rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#5b6b80; }
+#evaluation-info .pill-value { font-size:1.05rem; font-weight:700; color:#163d63; line-height:1.15; }
+#evaluation-info .eval-meta { display:flex; align-items:center; justify-content:center; gap:.75rem; padding-top:.4rem; border-top:1px solid #d9e5f4; font-size:.60rem; font-weight:600; color:#4b5d70; }
+#evaluation-info .eval-meta .mi-label { opacity:.7; margin-inline:.25rem; }
+#evaluation-info .meta-sep { width:1px; height:12px; background:#b9c8d8; border-radius:1px; }
+#evaluation-info #edit-details-btn { position:absolute; top:10px; left:10px; background:#ffffff!important; border:1px solid #c6d6eb!important; border-radius:8px!important; font-size:.6rem!important; padding:4px 10px!important; line-height:1!important; color:#466182!important; font-weight:600!important; box-shadow:0 1px 2px rgba(0,0,0,.05); backdrop-filter:blur(4px); }
+#evaluation-info #edit-details-btn:hover:not(:disabled){ background:#f0f6ff!important; border-color:#94b7e5!important; color:#1e3a8a!important; }
+#evaluation-info #edit-details-btn:disabled { opacity:.35!important; cursor:not-allowed!important; }
+#evaluation-info:before { display:none!important; }
+
+/* Dark mode new */
+.dark #evaluation-info { background:linear-gradient(140deg,#0d1624 0%,#152536 60%,#102033 100%)!important; border-color:#1e3a8a!important; box-shadow:0 3px 10px rgba(0,0,0,.55),0 0 0 1px rgba(30,58,138,.35)!important; }
+.dark #evaluation-info .eval-title { color:#bfdcff!important; }
+.dark #evaluation-info .eval-pill { background:rgba(22,34,51,.85); border-color:#1e3a8a; box-shadow:0 1px 2px rgba(0,0,0,.4); }
+.dark #evaluation-info .eval-pill:hover { box-shadow:0 3px 10px rgba(59,130,246,.35); }
+.dark #evaluation-info .pill-label { color:#94a3b8; }
+.dark #evaluation-info .pill-value { color:#e2e8f0; }
+.dark #evaluation-info .eval-meta { border-top-color:#1f3347; color:#cbd5e1; }
+.dark #evaluation-info .meta-sep { background:#334c64; }
+.dark #evaluation-info #edit-details-btn { background:#142335!important; border-color:#26436b!important; color:#93b9dd!important; }
+.dark #evaluation-info #edit-details-btn:hover:not(:disabled){ background:#1e3452!important; border-color:#3d5f8c!important; color:#e2e8f0!important; }
+
+/* Mobile tweaks */
+@media (max-width:520px){
+  #evaluation-info { padding:.85rem .9rem!important; }
+  #evaluation-info .eval-pills { grid-template-columns:1fr 1fr; }
+  #evaluation-info .pill-value { font-size:.95rem; }
+  #evaluation-info .eval-meta { font-size:.55rem; }
+}
+@media (max-width:400px){
+  #evaluation-info .eval-pills { grid-template-columns:1fr; }
+  #evaluation-info .eval-pill { min-height:64px; padding:.55rem .65rem; }
+}
+
+/* כפתור ערוך מינימליסטי - גודל וסטיילינג קבועים */
+#edit-details-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.65rem !important;
+  padding: 4px 10px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
+  height: 24px !important;
+  background: transparent !important;
+  color: #4b5563 !important;  /* **תוקן: מ-#6b7280 ל-#4b5563 - כהה יותר** */
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  z-index: 10;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#edit-details-btn:hover:not(:disabled) {
+  color: #374151 !important;
+  background: rgba(243, 244, 246, 0.5) !important;
+  transform: translateY(-1px) !important;
+}
+
+#edit-details-btn:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.dark #edit-details-btn {
+  color: #9ca3af !important;
+}
+
+.dark #edit-details-btn:hover:not(:disabled) {
+  color: #d1d5db !important;
+  background: rgba(55, 65, 81, 0.3) !important;
+}
+
+/* Runner Cards Grid - כרטיסי מספרי כתף - רק בדף Runners */
+/* עיצוב מינימליסטי וקומפקטי */
+#runners-page .runners-card {
+  position: relative !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(226, 232, 240, 0.6) !important;
+  color: #1f2937 !important;
+  padding: 0.65rem 0.45rem !important;
+  min-height: 68px !important;
+  max-height: 72px !important;
+  height: auto !important;
+  gap: 0.25rem !important;
+  overflow: hidden !important;
+  border-radius: 0.75rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+#runners-page .runners-card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* עיצוב קומפקטי ומינימליסטי לקארדים בעמוד הקבוצה */
+.runners-card {
+    border: 1px solid rgba(156, 163, 175, 0.3);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+.runners-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode */
+.dark .runners-card {
+    background: rgba(31, 41, 55, 0.6);
+    border-color: rgba(75, 85, 99, 0.6);
+}
+
+/* מספר הכתף */
+.runners-card .text-xl {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1;
+}
+
+.dark .runners-card .text-xl {
+    color: #f3f4f6;
+}
+
+/* כפתור מחיקה במצב עריכה */
+.runners-card .runner-delete-btn {
+    margin-top: 0.5rem;
+    font-size: 0.60rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s;
+}
+
+.runners-card .runner-delete-btn:hover {
+    background-color: #dc2626;
+}
+
+.runners-card .runner-delete-btn:focus {
+    outline: none;
+    outline: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+/* אינפוט עריכה */
+.runners-card .runner-inline-input {
+    max-width: 72px;
+    width: 72px;
+    text-align: center;
+    font-weight: 700;
+    color: #1f2937;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    padding: 0.25rem;
+}
+
+.runners-card .runner-inline-input:focus {
+    outline: none;
+    outline: 2px solid #60a5fa;
+    border-color: #60a5fa;
+}
+
+.dark .runners-card .runner-inline-input {
+    color: #f3f4f6;
+    background-color: #374151;
+    border-color: #4b5563;
+}
+
+/* גריד אוטומטי */
+.auto-grid.stretcher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+}
+
+@media (min-width: 640px) {
+    .auto-grid.stretcher-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 1rem;
+    }
+}
+
+/* גריד צפוף במצב רגיל - הרבה כרטיסים בשורה */
+#runners-page .auto-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)) !important;
+  gap: 0.5rem !important;
+}
+
+#runners-page .auto-grid.stretcher-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)) !important;
+  gap: 0.5rem !important;
+  width: 100% !important;
+}
+
+@media (max-width: 640px) {
+  #runners-page .auto-grid {
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)) !important;
+    gap: 0.4rem !important;
+  }
+  
+  #runners-page .auto-grid.stretcher-grid {
+    grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)) !important;
+    gap: 0.45rem !important;
+  }
+  
+  #runners-page .runners-card {
+    min-height: 64px !important;
+    max-height: 68px !important;
+    padding: 0.55rem 0.4rem !important;
+  }
+}
+
+#runners-page .runners-card .text-xl {
+  color: #111827 !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.25rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+#runners-page .runners-card > div:last-child {
+  margin-top: 0.15rem !important;
+  font-size: 0.55rem !important;
+  padding: 0.15rem 0.4rem !important;
+  border-radius: 0.25rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Dark mode for runner cards */
+.dark #runners-page .runners-card {
+  background: rgba(55, 65, 81, 0.6) !important;
+  border-color: rgba(107, 114, 128, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.dark #runners-page .runners-card:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark #runners-page .runners-card .text-xl {
+  color: #f9fafb !important;
+}
+
+.dark #runners-page .runners-card .text-emerald-600 {
+  color: #34d399;
+}
+
+.dark #runners-page .runners-card .text-rose-700 {
+  color: #fda4af;
+}
+
+.dark #runners-page .runners-card .text-amber-700 {
+  color: #fbbf24;
+}
+
+.dark #runners-page .runners-card.bg-gradient-to-br.from-rose-50 {
+  background: rgba(159, 18, 57, 0.2) !important;
+  border-color: rgba(251, 113, 133, 0.7) !important;
+}
+
+.dark #runners-page .runners-card.bg-gradient-to-br.from-amber-50 {
+  background: rgba(146, 64, 14, 0.2) !important;
+  border-color: rgba(251, 191, 36, 0.7) !important;
+}
+
+/* Status badges in runner cards */
+#runners-page .runners-card .text-gray-800 {
+  color: #1f2937 !important;
+}
+
+.dark #runners-page .runners-card .text-gray-800 {
+  color: #f3f4f6 !important;
+}
+
+.dark #runners-page .runners-card .text-gray-100 {
+  color: #f9fafb !important;
+}
+
+/* Runner Section Title - כותרת "מספרי כתף" */
+span.text-gray-700 {
+  color: #111827;
+}
+
+.dark span.text-gray-700 {
+  color: #e5e7eb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #edit-details-btn {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    top: 6px;
+    left: 6px;
+  }
+}
+
+/* ========================================
+   כפתורים ספציפיים לעמוד הרצים
+   ======================================== */
+
+/* כפתור האווטר */
+.avatar-btn-fixed {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.avatar-btn-fixed:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+}
+
+.avatar-btn-fixed:active {
+  transform: scale(0.98) !important;
+}
+
+/* כפתור מצב כהה/בהיר */
+#theme-toggle-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 50% !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+}
+
+#theme-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+#theme-toggle-btn:active {
+  transform: scale(0.95) !important;
+}
+
+.dark #theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+#theme-toggle-btn #theme-icon {
+  display: block;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ========================================
+   מצב עריכה אינלייני - Runner Cards Edit Mode
+   ======================================== */
+
+/* סרגל כפתורי עריכה */
+#runner-inline-edit-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  padding: 0.25rem !important; /* יותר עדין */
+  margin-bottom: 1rem;
+}
+
+.dark #runner-inline-edit-bar {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+/* הודעת שגיאה במצב עריכה */
+#runner-inline-edit-error {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.dark #runner-inline-edit-error {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* אינפוט עריכת מספר כתף */
+.runner-inline-input {
+  width: 4rem !important;
+  max-width: 4rem !important;
+  min-width: 4rem !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  padding: 0.25rem 0.5rem !important;
+  border: 2px solid #d1d5db !important;
+  border-radius: 0.375rem !important;
+  background: white !important;
+  color: #1f2937 !important;
+  transition: all 0.2s ease !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  -moz-appearance: textfield !important;
+}
+
+.runner-inline-input::-webkit-outer-spin-button,
+.runner-inline-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+.runner-inline-input:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  outline: 2px solid transparent !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark .runner-inline-input {
+  background: rgba(31, 41, 55, 0.8) !important;
+  border-color: rgba(107, 114, 128, 0.6) !important;
+  color: #f9fafb !important;
+}
+
+.dark .runner-inline-input:focus {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) !important;
+}
+
+/* כפתור מחיקה במצב עריכה */
+.editing-runners .runner-delete-btn {
+  margin-top: 0.5rem !important;
+  padding: 0.25rem 0.75rem !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  background: transparent !important;
+  color: #dc2626 !important;
+  border: none !important;
+  border-radius: 0.375rem !important;
+  cursor: pointer !important;
+  transition: 0.2s !important;
+  white-space: nowrap !important;
+  min-width: 60px !important;
+  text-decoration: underline !important;
+}
+
+.editing-runners .runner-delete-btn:hover {
+  color: #991b1b !important;
+  background: rgba(220, 38, 38, 0.05) !important;
+  transform: translateY(-1px) !important;
+}
+
+.editing-runners .runner-delete-btn:active {
+  transform: translateY(0) !important;
+}
+
+.dark .editing-runners .runner-delete-btn {
+  color: #f87171 !important;
+}
+
+.dark .editing-runners .runner-delete-btn:hover {
+  color: #fca5a5 !important;
+  background: rgba(248, 113, 113, 0.1) !important;
+}
+
+.editing-runners #runners-page .runners-card {
+  padding: 0.75rem 0.5rem !important;
+  min-height: 95px !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.3rem !important;
+  overflow: visible !important;
+}
+
+.editing-runners #runners-page .runners-card > div:not(.text-xl):not(.runner-edit-status):not(.shoulder-input-wrapper) {
+  display: none !important;
+}
+
+.editing-runners #runners-page .runner-edit-status {
+  font-size: 0.6rem !important;
+  font-weight: 600 !important;
+  padding: 0.15rem 0.4rem !important;
+  border-radius: 0.25rem !important;
+  text-align: center !important;
+  margin-top: 0.25rem !important;
+  display: block !important;
+  line-height: 1.1;
+}
+
+.editing-runners #runners-page .runners-card .text-xl {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 0.35rem !important;
+}
+
+.editing-runners #runners-page .runners-card .runner-delete-btn {
+  display: block !important;
+  margin-top: 0.2rem !important;
+  margin-bottom: 0 !important;
+}
+
+.editing-runners #runners-page .auto-grid {
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)) !important;
+  gap: 0.5rem !important;
+}
+
+.editing-runners #runners-page .auto-grid.stretcher-grid {
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+  gap: 0.6rem !important;
+}
+
+@media (max-width: 640px) {
+  .editing-runners #runners-page .auto-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)) !important;
+    gap: 0.4rem !important;
+  }
+  .editing-runners #runners-page .auto-grid.stretcher-grid {
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)) !important;
+    gap: 0.5rem !important;
+  }
+  .editing-runners #runners-page .runners-card {
+    min-height: 88px !important;
+    padding: 0.55rem 0.45rem !important;
+    gap: 0.35rem !important;
+  }
+  .editing-runners #runners-page .runner-inline-input {
+    width: 3.5rem !important;
+    max-width: 3.5rem !important;
+    min-width: 3.5rem !important;
+    font-size: 0.9rem !important;
+  }
+  .editing-runners .runner-delete-btn {
+    font-size: 0.6rem !important;
+    padding: 0.2rem 0.6rem !important;
+    min-width: 50px !important;
+  }
+}
+
+.editing-runners #runners-page .runner-inline-input {
+  font-size: 1rem !important;
+  letter-spacing: 0.5px;
+}
+
+.editing-runners #runners-page .runners-card.selected-stretcher,
+.editing-runners #runners-page .runners-card.selected-jerrican,
+.editing-runners #runners-page .runners-card.inactive {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* תיבת תחרות פעילה */
+.competition-active-box { position:relative; background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 55%,#e8f3ff 100%) !important; border:1px solid #93c5fd !important; box-shadow:0 4px 10px rgba(59,130,246,.12),0 1px 3px rgba(0,0,0,.05) !important; border-radius:1rem !important; padding:1.1rem 1.25rem !important; animation:activePulse 5s ease-in-out infinite; }
+.competition-active-box .font-semibold { font-size:.95rem !important; letter-spacing:.5px; }
+.competition-active-box .text-sm { font-size:.7rem !important; letter-spacing:.3px; }
+.competition-active-box:before { content:''; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(90deg,rgba(59,130,246,.15),rgba(99,102,241,.15),rgba(14,165,233,.15)); opacity:.35; pointer-events:none; }
+@keyframes activePulse { 0%,100% { box-shadow:0 4px 10px rgba(59,130,246,.12),0 1px 3px rgba(0,0,0,.05);} 50% { box-shadow:0 6px 14px rgba(59,130,246,.18),0 2px 5px rgba(0,0,0,.06);} }
+.dark .competition-active-box { background:linear-gradient(135deg,rgba(29,78,216,.35) 0%,rgba(30,64,175,.35) 55%,rgba(17,94,163,.35) 100%) !important; border:1px solid rgba(147,197,253,.4) !important; box-shadow:0 4px 10px rgba(0,0,0,.4) !important; }
+.dark .competition-active-box:before { background:linear-gradient(90deg,rgba(59,130,246,.25),rgba(99,102,241,.25),rgba(14,165,233,.25)); opacity:.4; }

@@ -1,0 +1,71 @@
+/* CLEAN REBUILD: Status Management Page */
+.status-page-wrapper { max-width:1100px; margin:0 auto; padding:12px 10px; }
+.status-page-title { text-align:center; font-size:1.15rem; font-weight:700; margin-bottom:12px; color:#1f2937; letter-spacing:.5px; }
+.dark .status-page-title { color:#f3f4f6; }
+.status-empty { text-align:center; padding:40px 10px; font-size:.9rem; color:#64748b; }
+.dark .status-empty { color:#94a3b8; }
+
+/* Compact responsive grid */
+.status-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:8px; }
+@media (min-width:480px){ .status-grid { grid-template-columns:repeat(auto-fill,minmax(94px,1fr)); } }
+@media (min-width:768px){ .status-grid { grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px; } }
+
+/* Card */
+.status-card { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:6px; padding:10px 6px 12px; border:1px solid #e2e8f0; background:#ffffff; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.06); transition:.18s box-shadow,.18s transform; overflow:hidden; }
+.status-card:hover { box-shadow:0 4px 10px rgba(0,0,0,.10); transform:translateY(-2px); }
+.dark .status-card { background:#1f2937; border-color:#374151; }
+.dark .status-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.35); }
+
+/* Shoulder number */
+.status-number { font-size:1.35rem; font-weight:700; line-height:1; color:#0f172a; text-align:center; }
+.dark .status-number { color:#f1f5f9; }
+
+/* Actions container */
+.status-actions { display:flex; width:100%; justify-content:center; align-items:center; gap:6px; }
+
+/* Buttons */
+.status-btn { flex:1 1 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:6px 4px; height:48px; border-radius:8px; font-weight:600; font-size:.58rem; letter-spacing:.4px; border:1px solid #cbd5e1; background:linear-gradient(#ffffff,#f1f5f9); color:#334155; box-shadow:0 1px 2px rgba(0,0,0,.05); cursor:pointer; transition:.18s background,.18s box-shadow,.18s transform; }
+.status-btn .icon { font-size:1.15rem; line-height:1; }
+.status-btn .text { font-size:.56rem; line-height:1; margin:0; }
+.status-btn:hover:not(:disabled) { background:linear-gradient(#fdfdfd,#e6ebf0); box-shadow:0 3px 6px rgba(0,0,0,.12); transform:translateY(-2px); }
+.status-btn:active:not(:disabled) { transform:translateY(0) scale(.97); box-shadow:0 2px 4px rgba(0,0,0,.16); }
+.status-btn:focus-visible { outline:2px solid #3b82f6; outline-offset:3px; }
+.status-btn:disabled { opacity:.5; cursor:not-allowed; box-shadow:none; }
+.dark .status-btn { background:linear-gradient(#1f2937,#2b3a4a); border-color:#475569; color:#e2e8f0; }
+.dark .status-btn:hover:not(:disabled) { background:linear-gradient(#253347,#364a5f); }
+
+/* Restore button: show text to LEFT of icon (horizontal) */
+.status-btn.btn-restore { flex-direction:row !important; direction:rtl !important; gap:6px !important; }
+.status-btn.btn-restore .text { order:0 !important; }
+.status-btn.btn-restore .icon { order:1 !important; }
+/* Ensure in very small screens it still fits */
+@media (max-width:420px){ .status-btn.btn-restore { gap:4px !important; } }
+
+/* Variant: temp removed (בדיקה) */
+.btn-temp-removed { border-color:#f59e0b; background:linear-gradient(#fff8e1,#ffe3aa); color:#7c4a09; }
+.btn-temp-removed:hover:not(:disabled) { background:linear-gradient(#fff2c1,#ffd676); }
+.dark .btn-temp-removed { background:linear-gradient(#7c4a09,#a76312); border-color:#d97706; color:#fde68a; }
+.dark .btn-temp-removed:hover:not(:disabled) { background:linear-gradient(#955b10,#c97816); }
+
+/* Variant: retired (פרש) */
+.btn-retired { border-color:#ef4444; background:linear-gradient(#ffe5e5,#ffc2c2); color:#7f1d1d; }
+.btn-retired:hover:not(:disabled) { background:linear-gradient(#ffd2d2,#ff9c9c); }
+.dark .btn-retired { background:linear-gradient(#7f1d1d,#b61d1d); border-color:#dc2626; color:#fca5a5; }
+.dark .btn-retired:hover:not(:disabled) { background:linear-gradient(#991f1f,#d62828); }
+
+/* State classes (background tint for entire card) */
+.status-card.is-temp-removed { background:linear-gradient(#fffdf5,#fff7e1); border-color:#fcd34d; }
+.dark .status-card.is-temp-removed { background:linear-gradient(#3f2d13,#5a4019); border-color:#d97706; }
+.status-card.is-retired { background:linear-gradient(#fff6f6,#ffe9e9); border-color:#fca5a5; }
+.dark .status-card.is-retired { background:linear-gradient(#3e1d1d,#5c2828); border-color:#dc2626; }
+/* No additional styles needed for active status cards; default styles apply */
+
+/* Compact adjustments for very narrow screens */
+@media (max-width:420px){
+  .status-grid { grid-template-columns:repeat(auto-fill,minmax(78px,1fr)); gap:6px; }
+  .status-card { padding:8px 6px 10px; }
+  .status-number { font-size:1.2rem; }
+  .status-btn { padding:5px 3px; height:44px; font-size:.52rem; }
+  .status-btn .icon { font-size:1.05rem; }
+  .status-btn .text { font-size:.5rem; }
+}

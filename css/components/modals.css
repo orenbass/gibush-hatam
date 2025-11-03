@@ -1,0 +1,401 @@
+/* ========================================
+   מודלים - Modals
+   ======================================== */
+
+#confirmation-modal .bg-white {
+  background: linear-gradient(180deg, #0b1220, #0b1018) !important;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--radius);
+}
+
+#confirmation-modal #cancel-btn {
+  background-color: #4a5568;
+  color: #f7fafc;
+}
+
+#confirmation-modal #cancel-btn:hover {
+  background-color: #718096;
+}
+
+/* Loading Overlay */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+  transition: opacity 0.2s ease-in-out;
+  padding-top: max(80px, env(safe-area-inset-top, 20px) + 60px);
+}
+
+#loading-overlay.hidden {
+  display: none;
+  opacity: 0;
+}
+
+.loading-box {
+  background-color: #ffffff;
+  color: #1f2937;
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+#loading-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Quick Comments Modal */
+.qc-group-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .6);
+  z-index: 99999;
+  display: none;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding-top: max(80px, env(safe-area-inset-top, 20px) + 60px);
+}
+
+.qc-group-modal {
+  position: fixed;
+  top: max(80px, env(safe-area-inset-top, 20px) + 60px);
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  transform: none;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  overflow-y: auto;
+  direction: rtl;
+  text-align: right;
+  z-index: 100000;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, .5);
+  font-size: 16px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+}
+
+.qc-group-modal h2 {
+  margin: 0 0 16px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #1f2937;
+}
+
+.qc-group-close {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  margin: 0 0 20px 0;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background .2s;
+  z-index: 1;
+}
+
+.qc-group-close:hover {
+  background: #dc2626;
+}
+
+/* ========================================
+   כפתורי הערות משותפים - Comment Buttons (Shared)
+   משותף לכל העמודים שצריכים כפתורי הערות
+   ======================================== */
+
+/* כפתורי הערות כלליים */
+.comment-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 12px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+  font-size: 12px;
+  font-weight: 500;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  transition: .18s background, .18s border-color, .18s color, .18s box-shadow;
+  min-height: 40px;
+  min-width: 88px;
+  cursor: pointer;
+}
+
+.comment-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.comment-btn.comment-btn-empty {
+  opacity: .75;
+}
+
+/* רמות הערות - צבעים */
+.comment-btn.comment-level-0:not(.comment-btn-empty),
+.comment-btn.comment-level-0 {
+  background: #fecaca;
+  color: #7f1d1d;
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 1px #f87171 inset;
+  opacity: 1;
+}
+
+.comment-btn.comment-level-1:not(.comment-btn-empty) {
+  background: #fed7aa;
+  color: #7c2d12;
+  border-color: #fdba74;
+  box-shadow: 0 0 0 1px #fb923c inset;
+}
+
+.comment-btn.comment-level-2:not(.comment-btn-empty) {
+  background: #fde68a;
+  color: #713f12;
+  border-color: #fcd34d;
+  box-shadow: 0 0 0 1px #facc15 inset;
+}
+
+.comment-btn.comment-level-3:not(.comment-btn-empty) {
+  background: #fef9c3;
+  color: #654321;
+  border-color: #fef08a;
+  box-shadow: 0 0 0 1px #fde047 inset;
+}
+
+.comment-btn.comment-level-4:not(.comment-btn-empty) {
+  background: #ecfccb;
+  color: #365314;
+  border-color: #d9f99d;
+  box-shadow: 0 0 0 1px #bef264 inset;
+}
+
+.comment-btn.comment-level-5:not(.comment-btn-empty) {
+  background: #e7fef3;
+  color: #065f46;
+  border-color: #bbf7d0;
+  box-shadow: 0 0 0 1px #34d399 inset;
+}
+
+.comment-btn:not(.comment-btn-empty):hover {
+  filter: brightness(.97);
+}
+
+/* כפתור הערות Sprint */
+.comment-btn.sprint-comment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1;
+  padding: 6px 16px;
+  border-radius: 12px;
+  min-height: 40px;
+  min-width: 88px;
+  white-space: nowrap;
+  position: relative;
+  max-width: 100%;
+}
+
+.comment-btn.sprint-comment-btn .comment-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  display: inline-block;
+}
+
+.comment-btn.sprint-comment-btn .comment-icon {
+  font-size: 14px;
+  opacity: .9;
+  line-height: 1;
+}
+
+.comment-btn.sprint-comment-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, .15);
+}
+
+.comment-btn.sprint-comment-btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.comment-btn.sprint-comment-btn:focus {
+  outline: 2px solid rgba(147, 197, 253, .9);
+  outline-offset: 2px;
+}
+
+/* רמות Sprint comment */
+.comment-btn.sprint-comment-btn.comment-level-0 {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.comment-btn.sprint-comment-btn.comment-level-1 {
+  background: #ffedd5;
+  border-color: #fdba74;
+  color: #9a3412;
+}
+
+.comment-btn.sprint-comment-btn.comment-level-2 {
+  background: #facc15;
+  border-color: #eab308;
+  color: #854d0e;
+}
+
+.comment-btn.sprint-comment-btn.comment-level-3 {
+  background: #fef08a;
+  border-color: #facc15;
+  color: #713f12;
+}
+
+.comment-btn.sprint-comment-btn.comment-level-4 {
+  background: #d9f99d;
+  border-color: #bef264;
+  color: #3f6212;
+}
+
+.comment-btn.sprint-comment-btn.comment-level-5 {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+/* Dark mode for comment buttons */
+.dark .comment-btn {
+  background: #374151;
+  color: #e2e8f0;
+  border-color: #4b5563;
+}
+
+.dark .comment-btn:hover {
+  background: #425065;
+  border-color: #64748b;
+}
+
+.dark .comment-btn.comment-level-0:not(.comment-btn-empty),
+.dark .comment-btn.comment-level-0 {
+  background: #641414;
+  color: #fecaca;
+  border-color: #991b1b;
+  box-shadow: 0 0 0 1px #b91c1c inset;
+}
+
+.dark .comment-btn.comment-level-1:not(.comment-btn-empty) {
+  background: #5a250c;
+  color: #fed7aa;
+  border-color: #9a3412;
+  box-shadow: 0 0 0 1px #c2410c inset;
+}
+
+.dark .comment-btn.comment-level-2:not(.comment-btn-empty) {
+  background: #5a3a05;
+  color: #fde68a;
+  border-color: #854d0e;
+  box-shadow: 0 0 0 1px #ca8a04 inset;
+}
+
+.dark .comment-btn.comment-level-3:not(.comment-btn-empty) {
+  background: #55520a;
+  color: #fef08a;
+  border-color: #713f12;
+  box-shadow: 0 0 0 1px #eab308 inset;
+}
+
+.dark .comment-btn.comment-level-4:not(.comment-btn-empty) {
+  background: #25420a;
+  color: #d9f99d;
+  border-color: #3f6212;
+  box-shadow: 0 0 0 1px #65a30d inset;
+}
+
+.dark .comment-btn.comment-level-5:not(.comment-btn-empty) {
+  background: #094226;
+  color: #bbf7d0;
+  border-color: #166534;
+  box-shadow: 0 0 0 1px #059669 inset;
+}
+
+.dark .comment-btn:not(.comment-btn-empty):hover {
+  filter: brightness(1.05);
+}
+
+/* Dark mode Sprint comment buttons */
+.dark .comment-btn.sprint-comment-btn.comment-level-0 {
+  background: #450a0a;
+  border-color: #991b1b;
+  color: #fecaca;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-1 {
+  background: #431407;
+  border-color: #c2410c;
+  color: #fed7aa;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-2 {
+  background: #422006;
+  border-color: #b45309;
+  color: #fde68a;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-3 {
+  background: #444003;
+  border-color: #a16207;
+  color: #fef08a;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-4 {
+  background: #1a2e05;
+  border-color: #4d7c0f;
+  color: #d9f99d;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-5 {
+  background: #062813;
+  border-color: #16a34a;
+  color: #bbf7d0;
+}

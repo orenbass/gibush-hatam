@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הגדרת קבוצה - מערכת גיבושים</title>
+    <link rel="stylesheet" href="css/main-unified.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>ברוך הבא, <span id="userName"></span>!</h1>
+            <p>אנא הזן את מספר הקבוצה שלך:</p>
+            
+            <form id="groupSetupForm">
+                <div class="input-group">
+                    <label for="groupNumber">מספר קבוצה:</label>
+                    <input type="number" id="groupNumber" name="groupNumber" required min="1" max="999">
+                </div>
+                
+                <button type="submit" class="continue-btn">המשך לדף הקבוצה</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // טעינת שם המשתמש מחשבון גוגל
+        window.onload = function() {
+            const userProfile = JSON.parse(localStorage.getItem('googleUserProfile'));
+            if (userProfile && userProfile.name) {
+                document.getElementById('userName').textContent = userProfile.name;
+            } else {
+                // אם אין פרופיל שמור, חזור לדף ההתחברות
+                window.location.href = 'index.html';
+            }
+        };
+
+        // טיפול בשליחת הטופס
+        document.getElementById('groupSetupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const groupNumber = document.getElementById('groupNumber').value;
+            const userProfile = JSON.parse(localStorage.getItem('googleUserProfile'));
+            
+            if (groupNumber && userProfile) {
+                // שמירת פרטי המעריך ב-localStorage
+                const evaluatorData = {
+                    name: userProfile.name,
+                    email: userProfile.email,
+                    groupNumber: groupNumber
+                };
+                
+                localStorage.setItem('evaluatorData', JSON.stringify(evaluatorData));
+                
+                // מעבר לדף הקבוצה
+                window.location.href = `group.html?group=${groupNumber}&evaluator=${encodeURIComponent(userProfile.name)}`;
+            }
+        });
+    </script>
+</body>
+</html>

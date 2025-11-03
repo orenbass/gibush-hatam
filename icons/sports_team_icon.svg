@@ -1,0 +1,27 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <!-- רקע -->
+  <rect width="100%" height="100%" fill="#e0f7fa"/>
+
+  <!-- שחקנים -->
+  <circle cx="50" cy="60" r="20" fill="#4fc3f7"/>
+  <text x="50" y="65" font-size="12" text-anchor="middle" fill="white">7</text>
+
+  <circle cx="100" cy="60" r="20" fill="#4fc3f7"/>
+  <text x="100" y="65" font-size="12" text-anchor="middle" fill="white">10</text>
+
+  <circle cx="150" cy="60" r="20" fill="#4fc3f7"/>
+  <text x="150" y="65" font-size="12" text-anchor="middle" fill="white">23</text>
+
+  <!-- אייקון ניהול -->
+  <g transform="translate(160, 150)">
+    <circle r="12" fill="#0288d1"/>
+    <circle r="5" fill="white"/>
+    <line x1="-12" y1="0" x2="-18" y2="0" stroke="white" stroke-width="2"/>
+    <line x1="12" y1="0" x2="18" y2="0" stroke="white" stroke-width="2"/>
+    <line x1="0" y1="-12" x2="0" y2="-18" stroke="white" stroke-width="2"/>
+    <line x1="0" y1="12" x2="0" y2="18" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- טקסט -->
+  <text x="100" y="180" font-size="14" text-anchor="middle" fill="#01579b">ניהול קבוצה</text>
+</svg>

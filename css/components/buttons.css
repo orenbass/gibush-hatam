@@ -1,0 +1,148 @@
+/* ========================================
+   כפתורים גלובליים - Global Buttons Base
+   ======================================== */
+
+/* כללים גלובליים בסיסיים בלבד - ללא עיצוב ספציפי */
+button:not(.admin-nav-tab) {
+  font-family: var(--hebrew-font);
+  cursor: pointer;
+  border: none;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+/* ========================================
+   Utility Button Classes - לשימוש כללי בלבד
+   ======================================== */
+
+/* Base Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  gap: 8px;
+}
+
+/* Button Variants */
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+
+.btn-success {
+  background: #10b981;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 16px;
+}
+
+/* Disabled State */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Dark Mode for utility buttons */
+.dark .btn-primary {
+  background: #2563eb;
+}
+
+.dark .btn-primary:hover {
+  background: #1e40af;
+}
+
+.dark .btn-secondary {
+  background: #4b5563;
+}
+
+.dark .btn-secondary:hover {
+  background: #374151;
+}
+
+/* Avatar Button Styles */
+.avatar-btn-fixed {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(37, 99, 235, 0.3);
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.avatar-btn-fixed:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.avatar-btn-fixed:active {
+    transform: scale(0.95);
+}
+
+/* Dark mode support */
+.dark .avatar-btn-fixed {
+    border-color: rgba(96, 165, 250, 0.3);
+    background: linear-gradient(135deg, #1e40af, #1e3a8a);
+    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.2);
+}
+
+.dark .avatar-btn-fixed:hover {
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+}
+
+/* ========================================
+   הערה: כל כפתור ספציפי לעמוד מוגדר בקובץ ה-CSS של העמוד
+   - כפתורי ספרינטים → heat.css
+   - כפתורי אלונקות → stretcher-heat.css
+   - כפתורי זחילות → crawling-sprint.css
+   - כפתורי הערות → quick-comments.css
+   - וכו'
+   ======================================== */

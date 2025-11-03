@@ -1,0 +1,30 @@
+/* ========================================
+   כרטיסים - Cards
+   ======================================== */
+
+/* כרטיסי ריצה כלליים - REMOVED old .runner-card:not(.runner-card) definition */
+/* הוסר כדי למנוע דריסות - כל דף מגדיר את runner-card עצמו */
+
+/* שורת כפתורי משימות - הגדרה כללית בלבד */
+.task-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* הדגשות בדוח */
+.highlight-gold {
+  background: linear-gradient(90deg, rgba(234,179,8,.20), transparent);
+  color: #1a202c;
+}
+
+.highlight-silver {
+  background: linear-gradient(90deg, rgba(148,163,184,.20), transparent);
+  color: #1a202c;
+}
+
+.highlight-bronze {
+  background: linear-gradient(90deg, rgba(234,88,12,.18), transparent);
+  color: #1a202c;
+}

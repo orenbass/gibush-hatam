@@ -1,0 +1,45 @@
+/* ========================================
+   משתנים גלובליים - Variables
+   ======================================== */
+
+:root {
+  /* צבעים ראשיים */
+  --bg: #0f172a;           /* slate-900 */
+  --bg-2: #111827;         /* gray-900 */
+  --card: #0b1220;         /* deep card */
+  --text: #e5e7eb;         /* gray-200 */
+  --muted: #94a3b8;        /* slate-400 */
+  --accent: #3b82f6;       /* blue-500 */
+  --accent-2: #22d3ee;     /* cyan-400 */
+  --success: #10b981;      /* emerald-500 */
+  --danger: #ef4444;       /* red-500 */
+  --warn: #f59e0b;         /* amber-500 */
+  --ring: rgba(59,130,246,.45);
+  
+  /* משתנים נוספים */
+  --primary-color: #4F46E5;
+  --primary-hover: #4338CA;
+  --secondary-color: #4B5563;  /* **תוקן: מ-#6B7280 ל-#4B5563 - כהה יותר** */
+  --success-color: #10B981;
+  --warning-color: #F59E0B;
+  --error-color: #EF4444;
+  --background-color: #F9FAFB;
+  --surface-color: #FFFFFF;
+  --text-primary: #111827;  /* **תוקן: מ-#1F2937 ל-#111827 - כהה יותר** */
+  --text-secondary: #374151;  /* **תוקן: מ-#6B7280 ל-#374151 - כהה הרבה יותר** */
+  --border-color: #E5E7EB;
+  
+  /* צללים */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* מרווחים וגבולות */
+  --radius: 14px;
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
+  
+  /* פונטים */
+  --hebrew-font: 'Heebo', 'Assistant', 'Segoe UI', 'Arial Hebrew', sans-serif;
+  --english-font: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+}

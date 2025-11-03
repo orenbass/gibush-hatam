@@ -1,0 +1,70 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      :root {
+        --bg1: #750f12; /* בורדו כהה */
+        --bg2: #8d1416; /* בורדו בהיר יותר למרכז */
+        --ring: #ffffff; /* טבעות לבנות */
+        --stroke: #101010; /* קו שחור עדין */
+      }
+    </style>
+    <!-- גרדיינט רקע -->
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="var(--bg2)"/>
+      <stop offset="100%" stop-color="var(--bg1)"/>
+    </radialGradient>
+
+    <!-- צל רך למדליות -->
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+
+    <!-- קליפ לעיגולים -->
+    <clipPath id="clipTop"><circle cx="512" cy="340" r="220"/></clipPath>
+    <clipPath id="clipLeft"><circle cx="330" cy="700" r="220"/></clipPath>
+    <clipPath id="clipRight"><circle cx="694" cy="700" r="220"/></clipPath>
+  </defs>
+
+  <!-- רקע עם פינות מעוגלות -->
+  <rect x="0" y="0" width="1024" height="1024" rx="220" fill="url(#bgGrad)"/>
+
+  <!-- כותרת/טבעת מרכזית עדינה (אופציונלי) -->
+  <circle cx="512" cy="512" r="420" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="18"/>
+
+  <!-- עיגול עליון: סמל הפגסוס -->
+  <g filter="url(#softShadow)">
+    <!-- תמונה חתוכה לעיגול -->
+    <g clip-path="url(#clipTop)">
+      <!-- התאמה כדי שהתמונה תמלא את העיגול ("slice") -->
+      <image href="pegasus.png"
+             x="292" y="120" width="440" height="440"
+             preserveAspectRatio="xMidYMid slice"/>
+    </g>
+    <!-- טבעת לבנה סביב החיתוך -->
+    <circle cx="512" cy="340" r="220" fill="none" stroke="var(--ring)" stroke-width="18"/>
+    <!-- טבעת שחורה דקה להבדלה -->
+    <circle cx="512" cy="340" r="220" fill="none" stroke="var(--stroke)" stroke-width="3" opacity="0.5"/>
+  </g>
+
+  <!-- עיגול שמאלי-תחתון: סמל העוף הדורס -->
+  <g filter="url(#softShadow)">
+    <g clip-path="url(#clipLeft)">
+      <image href="eagle.png"
+             x="110" y="480" width="440" height="440"
+             preserveAspectRatio="xMidYMid slice"/>
+    </g>
+    <circle cx="330" cy="700" r="220" fill="none" stroke="var(--ring)" stroke-width="18"/>
+    <circle cx="330" cy="700" r="220" fill="none" stroke="var(--stroke)" stroke-width="3" opacity="0.5"/>
+  </g>
+
+  <!-- עיגול ימני-תחתון: סמל הכוונת -->
+  <g filter="url(#softShadow)">
+    <g clip-path="url(#clipRight)">
+      <image href="target.png"
+             x="474" y="480" width="440" height="440"
+             preserveAspectRatio="xMidYMid slice"/>
+    </g>
+    <circle cx="694" cy="700" r="220" fill="none" stroke="var(--ring)" stroke-width="18"/>
+    <circle cx="694" cy="700" r="220" fill="none" stroke="var(--stroke)" stroke-width="3" opacity="0.5"/>
+  </g>
+</svg>

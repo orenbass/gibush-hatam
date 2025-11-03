@@ -1,0 +1,52 @@
+/* ========================================
+   טיפוגרפיה - Typography
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  font-family: var(--hebrew-font);
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  letter-spacing: 0.2px;
+}
+
+/* תיקון טקסט עברי */
+.hebrew-text,
+body,
+h1, h2, h3, h4, h5, h6,
+.form-label,
+.form-input,
+.btn,
+.card,
+.error-message {
+  font-family: var(--hebrew-font) !important;
+  font-weight: 400;
+  letter-spacing: 0;
+  word-spacing: normal;
+}
+
+/* מיקום והצגה של מספרים באנגלית */
+.number-input,
+input[type="number"],
+input[inputmode="numeric"] {
+  font-family: var(--english-font);
+  direction: ltr;
+  text-align: center;
+}
+
+/* Required fields */
+.required-field::after {
+  content: '*';
+  color: var(--danger);
+  margin-right: 4px;
+}
+
+/* Timer display unified */
+:root { --timer-color-light:#0f172a; --timer-shadow-light:0 1px 2px rgba(0,0,0,0.15); --timer-color-dark:#ffffff; --timer-shadow-dark:0 2px 12px rgba(59,130,246,0.35); }
+.timer-display { font-family:'Courier New',Courier,monospace; font-variant-numeric:tabular-nums; color:var(--timer-color-light); text-shadow:var(--timer-shadow-light); transition:color .25s, text-shadow .25s; }
+.dark .timer-display { color:var(--timer-color-dark) !important; text-shadow:var(--timer-shadow-dark) !important; }
+.timer-display.small { font-size:48px; font-weight:700; }
+@media (max-width:768px){ .timer-display.small { font-size:36px; } }

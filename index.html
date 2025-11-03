@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>מערכת גיבוש חת"מ</title>
+    <!-- Updated: קובץ CSS חדש מאורגן -->
+    <link rel="stylesheet" href="css/main-unified.css">
+    <link rel="stylesheet" href="css/components/navigation.css">
+    <link rel="stylesheet" href="css/pages/runners.css">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="application-name" content="Gibush">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/thumbnail_gibush_192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icons/thumbnail_gibush_192.png">
+    <link rel="apple-touch-icon" href="./icons/thumbnail_gibush_192.png">
+
+    <!-- iOS PWA metadata -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gibush">
+    <link rel="apple-touch-icon" href="./icons/thumbnail_gibush_192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="./icons/thumbnail_gibush_192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/thumbnail_gibush_192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    
+    <!-- Utils and config first -->
+    <script src="./js/config/app-version.js"></script>
+    <script src="./js/config/users-config.js"></script>
+    <script src="./js/config/config.js"></script>
+    <script src="./js/config/crawling-config.js"></script>
+    <script src="./js/utils/time.js"></script>
+    <script src="./js/utils/modal.js"></script>
+    <script src="js/utils/scoring.js"></script>
+    <script src="js/utils/unified-export.js"></script>
+    <script src="js/utils/aggregated-excel-exporter.js"></script>
+    <script src="js/utils/compact-backup.js"></script>
+    <script src="js/utils/pwa.js"></script>
+    <script src="js/utils/comment-mic.js"></script>
+    <script src="./js/utils/ui-helpers.js"></script>
+    <script src="js/utils/user-avatar.js"></script>
+    <script src="js/utils/auto-backup-manager.js"></script>
+    <script src="js/services/google-drive-uploader.js"></script>
+    <script src="js/services/google-drive-reader.js"></script>
+
+    <!-- Pages -->
+    <script src="js/pages/runners.js"></script>
+    <script src="js/pages/status-management.js"></script>
+    <script src="js/pages/heat.js"></script>
+    <script src="js/pages/crawling-comments.js"></script>
+    <script src="js/pages/crawling-sprint.js"></script>
+    <script src="js/pages/stretcher-heat.js"></script>
+    <script src="js/pages/report.js"></script>
+    <script src="js/pages/admin-settings.js"></script>
+    <script src="js/pages/aggregated-dashboard.js"></script>
+    <script src="js/pages/stats-dashboard.js"></script>
+
+    <!-- Icons -->
+    <script src="js/icons/stretcher.js"></script>
+    <script src="js/icons/jerrican.js"></script>
+
+    <!-- Main App -->
+    <script src="quick-comments.js"></script>
+    <script src="app.js"></script>
+
+    <style id="safe-area-support">
+        :root { --safe-area-top: env(safe-area-inset-top, 0px); }
+        @media (display-mode: standalone) {
+            body { padding-top: max(calc(var(--safe-area-top) + 6px), 6px); }
+            header.sticky { top: var(--safe-area-top); }
+        }
+        @supports(padding:max(0px)) {
+            body.pwa-safe { padding-top: max(calc(var(--safe-area-top) + 6px), 6px); }
+            body.pwa-safe header.sticky { top: var(--safe-area-top); }
+        }
+    </style>
+    
+    <!-- תיקון צבעי ניווט - דריסת Tailwind CSS -->
+    <style>
+        /* תפריט ניווט ראשי - במצב בהיר */
+        nav.bg-white {
+            background-color: #ffffff !important;
+        }
+        
+        /* תפריט ניווט ראשי - במצב כהה */
+        .dark nav.bg-white,
+        html.dark nav.bg-white {
+            background-color: #1e293b !important;
+        }
+        
+        /* כפתורי ניווט - במצב בהיר */
+        .nav-tab {
+            color: #64748b !important;
+        }
+        
+        .nav-tab:hover {
+            background-color: #f1f5f9 !important;
+            color: #3b82f6 !important;
+        }
+        
+        .nav-tab.is-active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: white !important;
+        }
+        
+        /* כפתורי ניווט - במצב כהה */
+        .dark .nav-tab,
+        html.dark .nav-tab {
+            color: #94a3b8 !important;
+        }
+        
+        .dark .nav-tab:hover,
+        html.dark .nav-tab:hover {
+            background-color: #334155 !important;
+            color: #60a5fa !important;
+        }
+        
+        .dark .nav-tab.is-active,
+        html.dark .nav-tab.is-active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: white !important;
+        }
+    </style>
+    
+    <!-- Quick Comments - נותר רק הקוד הדרוש למיקום sticky ולהסתרה -->
+    <style>
+        #quick-comment-bar-container.quick-comment-sticky {
+            position: sticky;
+            top: calc(var(--safe-area-top, 0px));
+            z-index: 60;
+        }
+        
+        body.hide-quick-comments #quick-comment-bar-container { 
+            display: none; 
+        }
+    </style>
+    
+    <!-- Navigation Icons - רק הגדרות אייקונים -->
+    <style>
+        .nav-icon-team,
+        .nav-icon-status,
+        .nav-icon-stretcher,
+        .nav-icon-sprint,
+        .nav-icon-crawl,
+        .nav-icon-crawl-sprint,
+        .nav-icon-socio-stretcher,
+        .nav-icon-report {
+            width: 30px;
+            height: 30px;
+            display: block;
+            transform: translateY(1px);
+        }
+        
+        .nav-tab.is-active .nav-icon-team,
+        .nav-tab.is-active .nav-icon-status,
+        .nav-tab.is-active .nav-icon-stretcher,
+        .nav-tab.is-active .nav-icon-sprint,
+        .nav-tab.is-active .nav-icon-crawl,
+        .nav-tab.is-active .nav-icon-crawl-sprint,
+        .nav-tab.is-active .nav-icon-socio-stretcher,
+        .nav-tab.is-active .nav-icon-report {
+            filter: brightness(1.15);
+        }
+    </style>
+    
+    <!-- PWA and zoom prevention scripts -->
+    <script>
+        (function(){
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (isStandalone) document.documentElement.classList.add('standalone'), document.body?.classList.add('pwa-safe');
+            window.addEventListener('DOMContentLoaded', ()=> {
+                if (isStandalone) document.body.classList.add('pwa-safe');
+            });
+        })();
+        
+        ['gesturestart','gesturechange','gestureend'].forEach(ev =>
+            document.addEventListener(ev, e => e.preventDefault(), { passive:false })
+        );
+        
+        document.addEventListener('wheel', e => {
+            if (e.ctrlKey) e.preventDefault();
+        }, { passive:false });
+        
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && ['+','-','=', '0'].includes(e.key)) e.preventDefault();
+        });
+        
+        (function(){
+            let lastTouchStart = 0;
+            document.addEventListener('touchstart', e => {
+                if (e.touches.length !== 1) return;
+                const now = performance.now();
+                const delta = now - lastTouchStart;
+                if (delta > 0 && delta < 260) {
+                    const t = e.target;
+                    if (!(/^(INPUT|TEXTAREA|BUTTON|SELECT)$/.test(t.tagName)) && !t.isContentEditable) {
+                        e.preventDefault();
+                    }
+                }
+                lastTouchStart = now;
+            }, { passive:false });
+        })();
+    </script>
+    
+    <!-- בדיקת אימות -->
+    <script>
+        // בדיקה אם המשתמש מחובר
+        (function() {
+            function checkAuth() {
+                try {
+                    const authState = localStorage.getItem('gibushAuthState');
+                    if (!authState) {
+                        console.log('🔒 לא נמצא מצב אימות, מעביר למסך התחברות');
+                        window.location.href = './landing.html';
+                        return;
+                    }
+                    
+                    const session = JSON.parse(authState);
+                    const now = Date.now();
+                    const sessionTime = session.timestamp || 0;
+                    const timeout = 24 * 60 * 60 * 1000; // 24 שעות
+                    
+                    if ((now - sessionTime) > timeout) {
+                        console.log('🔒 סשן פג תוקף, מעביר למסך התחברות');
+                        localStorage.removeItem('gibushAuthState');
+                        window.location.href = './landing.html';
+                        return;
+                    }
+                    
+                    if (!session.authState || !session.authState.isAuthenticated) {
+                        console.log('🔒 משתמש לא מאומת, מעביר למסך התחברות');
+                        window.location.href = './landing.html';
+                        return;
+                    }
+                    
+                    console.log('✅ אימות תקף, ממשיך לאפליקציה');
+                } catch (error) {
+                    console.error('❌ שגיאה בבדיקת אימות:', error);
+                    localStorage.removeItem('gibushAuthState');
+                    window.location.href = './landing.html';
+                }
+            }
+            
+            // בדיקה מיידית
+            checkAuth();
+        })();
+    </script>
+    <script>
+      // בדיקת ועדכון גרסה + חלון צף מרכזי במקרה של שינוי גרסה
+      document.addEventListener('DOMContentLoaded', () => {
+        try {
+          const currentVersion = (window.APP_VERSION || (window.LANDING_CONFIG?.branding?.version) || '').trim();
+          const displayVer = currentVersion.replace(/^v/i,'');
+          const versionEl = document.getElementById('version-text');
+          if (versionEl) versionEl.textContent = displayVer ? `גרסה: ${displayVer}` : '';
+
+          const installedVersionKey = 'appVersionInstalled';
+          let installedVersion = localStorage.getItem(installedVersionKey);
+
+          // התקנה ראשונה: שמירת גרסה נוכחית ומניעת באנר
+          if (!installedVersion && currentVersion) {
+            localStorage.setItem(installedVersionKey, currentVersion);
+            installedVersion = currentVersion;
+            return;
+          }
+
+          if (!currentVersion) return;
+          if (installedVersion === currentVersion) return;
+
+          // יצירת חלון צף מודאלי במרכז המסך
+          if (!document.getElementById('version-update-modal')) {
+            // רקע כהה
+            const overlay = document.createElement('div');
+            overlay.id = 'version-update-modal-overlay';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+            
+            // חלון מרכזי
+            const modal = document.createElement('div');
+            modal.id = 'version-update-modal';
+            modal.style.cssText = 'background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);color:#fff;border-radius:20px;padding:32px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.5);max-width:90%;width:420px;text-align:center;position:relative;animation:modalSlideIn 0.3s ease-out;';
+            
+            modal.innerHTML = `
+              <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+              <h2 style="font-size:24px;font-weight:bold;margin-bottom:12px;">גרסה חדשה זמינה!</h2>
+              <div style="font-size:16px;margin-bottom:8px;opacity:0.95;">
+                <strong style="font-size:20px;color:#fbbf24;">${displayVer}</strong>
+              </div>
+              <div style="font-size:14px;opacity:0.85;margin-bottom:24px;">
+                גרסה מותקנת: ${installedVersion || 'אין'}
+              </div>
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <button id="btn-update-version-modal" style="background:#22c55e;color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(34,197,94,0.4);transition:all 0.2s;">
+                  ⬇️ עדכן עכשיו
+                </button>
+                <button id="btn-dismiss-version-modal" style="background:rgba(255,255,255,0.2);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;">
+                  אחר כך
+                </button>
+              </div>
+            `;
+            
+            // הוספת אנימציה
+            const style = document.createElement('style');
+            style.textContent = `
+              @keyframes modalSlideIn {
+                from { transform: translateY(-50px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+              }
+              #btn-update-version-modal:hover {
+                background: #16a34a !important;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(34,197,94,0.5) !important;
+              }
+              #btn-dismiss-version-modal:hover {
+                background: rgba(255,255,255,0.3) !important;
+              }
+            `;
+            document.head.appendChild(style);
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+
+            // פעולה: עדכון
+            document.getElementById('btn-update-version-modal').addEventListener('click', async () => {
+              try {
+                localStorage.setItem(installedVersionKey, currentVersion);
+                if (typeof window.handleUpdateApp === 'function') {
+                  await window.handleUpdateApp();
+                } else {
+                  location.reload(true);
+                }
+              } catch(e){ console.warn('Update failed', e); }
+            });
+
+            // פעולה: סגירה
+            document.getElementById('btn-dismiss-version-modal').addEventListener('click', () => {
+              localStorage.setItem(installedVersionKey, currentVersion);
+              overlay.remove();
+            });
+
+            // סגירה בלחיצה על הרקע
+            overlay.addEventListener('click', (e) => {
+              if (e.target === overlay) {
+                localStorage.setItem(installedVersionKey, currentVersion);
+                overlay.remove();
+              }
+            });
+          }
+        } catch(e){ console.warn('Version modal error', e); }
+      });
+    </script>
+</head>
+
+<body>
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <div id="loading-text">נא להמתין...</div>
+        </div>
+    </div>
+
+    <header class="z-40 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md shadow-sm">
+        <div id="app" class="min-h-screen flex flex-col items-center p-4 bg-gray-100 text-gray-800">
+            <header class="w-full max-w-6xl p-4 bg-white rounded-lg shadow-md mb-2 text-center relative">
+                <!-- כותרת מרכזית עם מקום לכפתורים בצדדים -->
+                <div class="flex items-center justify-between">
+                    <!-- אווטר בצד ימין (בעברית) -->
+                    <div class="flex-shrink-0 w-12 flex justify-start">
+                        <!-- האווטר יתווסף כאן דינמית -->
+                    </div>
+                    
+                    <!-- כותרת במרכז - יכולה לגלוש למטה במסכים קטנים -->
+                    <div class="flex-1 min-w-0 px-2">
+                        <h1 id="header-title" class="text-2xl md:text-3xl font-bold text-blue-600 leading-tight">מערכת גיבוש חת"מ</h1>
+                        <p class="text-sm text-gray-500 mt-1" id="version-text"></p>
+                    </div>
+                    
+                    <!-- כפתור גוונים בצד שמאל -->
+                    <div class="flex-shrink-0 w-12 flex justify-end">
+                        <button id="theme-toggle-btn" type="button"
+                            class="w-10 h-10 flex items-center justify-center bg-transparent border-none text-2xl cursor-pointer rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                            title="שינוי גוונים">
+                            <span id="theme-icon">🌓</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <nav class="w-full max-w-6xl bg-white rounded-lg shadow-md overflow-x-auto mb-1">
+                <ul class="flex justify-start md:justify-center gap-x-1 text-sm font-semibold text-gray-600 px-1 py-1">
+                    <li class="flex-shrink-0">
+                        <button class="nav-tab" data-page="runners">
+                            <span>
+                                <img src="./icons/sport-team-shirt.svg" alt="קבוצה" class="nav-icon-team" aria-hidden="true">
+                            </span>
+                            <span>קבוצה</span>
+                        </button>
+                    </li>
+                    <li class="flex-shrink-0">
+                        <button class="nav-tab" data-page="status-management">
+                            <span>
+                                <img src="./icons/status_icon.svg" alt="סטטוס" class="nav-icon-status" aria-hidden="true">
+                            </span>
+                            <span>סטטוס</span>
+                        </button>
+                    </li>
+                    <li class="flex-shrink-0">
+                        <button class="nav-tab" data-page="heats">
+                            <span>
+                                <img src="./icons/sprint_icon.svg" alt="ספרינטים" class="nav-icon-sprint" aria-hidden="true">
+                            </span>
+                            <span>ספרינטים</span>
+                        </button>
+                    </li>
+                    <li class="flex-shrink-0">
+                        <button class="nav-tab" data-page="crawling-drills-comments">
+                            <span>
+                                <img src="./icons/crawl_group_icon.svg" alt="זחילה קבוצתית" class="nav-icon-crawl" aria-hidden="true">
+                            </span>
+                            <span>זחילה קב'</span>
+                        </button>
+                    </li>
+                    <li class="flex-shrink-0">
+                        <button class="nav-tab" data-page="crawling-sprint">
+                            <span>
+                                <img src="./icons/crawl_sprint_icon.svg" alt="זחילות" class="nav-icon-crawl-sprint" aria-hidden="true">
+                            </span>
+                            <span>זחילות</span>
+                        </button>
+                    </li>
+                    <li class="flex-shrink-0">
+                        <button class="nav-tab" data-page="sociometric-stretcher-heat">
+                            <span>
+                                <img src="./icons/sociometric_stretcher_icon.svg" alt="אלונקה סוציומטרית" class="nav-icon-socio-stretcher" aria-hidden="true">
+                            </span>
+                            <span>אלונקות</span>
+                        </button>
+                    </li>
+                    <li class="flex-shrink-0">
+                        <button class="nav-tab" data-page="report">
+                            <span>
+                                <img src="./icons/report_page_icon.svg" alt="סיכום" class="nav-icon-report" aria-hidden="true">
+                            </span>
+                            <span>סיכום</span>
+                        </button>
+                    </li>
+                    <!-- דשבורד מאוחד - מוצג רק למיילים מורשים -->
+                    <li id="aggregated-dashboard-nav-item" class="flex-shrink-0" style="display:none">
+                        <button class="nav-tab" data-page="aggregated-dashboard" title="דשבורד">
+                            <span>
+                                <img src="./icons/sports_team_icon.svg" alt="דשבורד" class="nav-icon-report" aria-hidden="true">
+                            </span>
+                            <span>דשבורד</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div id="quick-comment-bar-container" class="quick-comment-sticky w-full max-w-6xl mb-1"></div>
+            
+            <main id="content" class="w-full max-w-6xl bg-white p-4 md:p-6 rounded-lg shadow-md flex-grow">
+                <div id="runner-list" class="space-y-2"></div>
+            </main>
+            
+            <footer id="footer-navigation" class="w-full max-w-6xl p-4 mt-1"></footer>
+            
+            <div id="autosave-status"
+                class="fixed bottom-4 left-4 bg-gray-800 text-white text-xs py-1 px-3 rounded-full opacity-0 transition-opacity duration-300">
+                שמירה אוטומטית...
+            </div>
+            
+            <div id="loading-overlay"
+                class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden"></div>
+        </div>
+        
+        <template id="runner-row-template">
+            <div class="flex items-center space-x-2 space-x-reverse flex-wrap">
+                <span class="runner-index w-6 md:w-8 text-center text-gray-500 flex-shrink-0"></span>
+                <input type="number"
+                    class="runner-input flex-grow p-2 border border-gray-300 rounded-lg text-lg text-right" min="1"
+                    max="999">
+                <button
+                    class="remove-runner-btn bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors duration-200 text-sm">הסר</button>
+            </div>
+        </template>
+        
+        <button id="install-btn" style="display:none; position:fixed; bottom:24px; right:24px; z-index:1000;" aria-label="התקן כאפליקציה">
+            📲 התקן כאפליקציה
+        </button>
+    </header>
+
+    <!-- Scripts for quick comment visibility -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const qc = document.getElementById('quick-comment-bar-container');
+            if(!qc) return;
+
+            function setQC(page){
+                if(page === 'runners'){
+                    document.body.classList.add('hide-quick-comments');
+                } else {
+                    document.body.classList.remove('hide-quick-comments');
+                }
+            }
+
+            function detectCurrentPage(){
+                if (window.state && window.state.currentPage) {
+                    return window.state.currentPage;
+                }
+                try {
+                    const key = (window.CONFIG && window.CONFIG.APP_STATE_KEY) || 'sprintAppState_v1.11';
+                    const rawState = localStorage.getItem(key);
+                    if (rawState) {
+                        const parsed = JSON.parse(rawState);
+                        return parsed.appState?.currentPage || parsed.currentPage || 'runners';
+                    }
+                } catch (e) {
+                    // Ignore parsing errors
+                }
+                return 'runners';
+            }
+
+            setQC(detectCurrentPage());
+
+            document.querySelectorAll('.nav-tab').forEach(btn=>{
+                btn.addEventListener('click', () => setQC(btn.dataset.page));
+            });
+
+            if (window.render && !window.__qcRenderPatched) {
+                const originalRender = window.render;
+                window.render = function() {
+                    const result = originalRender.apply(this, arguments);
+                    try {
+                        setQC(window.state?.currentPage);
+                    } catch(e) { /* ignore */ }
+                    return result;
+                };
+                window.__qcRenderPatched = true;
+            }
+        });
+    </script>
+
+    <!-- PWA Install Script -->
+    <script>
+        (function(){
+            let deferredInstallEvent = null;
+            const btn = document.getElementById('install-btn');
+
+            function hide(){ btn.style.display='none'; }
+
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                hide(); return;
+            }
+
+            window.addEventListener('beforeinstallprompt', (e)=>{
+                console.log('[PWA] beforeinstallprompt fired');
+                e.preventDefault();
+                deferredInstallEvent = e;
+                btn.style.display='block';
+                btn.disabled = false;
+                btn.textContent = '📲 התקן כאפליקציה';
+            });
+
+            window.addEventListener('appinstalled', () => {
+                console.log('[PWA] appinstalled');
+                btn.textContent = 'הותקן ✅';
+                setTimeout(hide, 1500);
+            });
+
+            btn.addEventListener('click', async () => {
+                if (!deferredInstallEvent) {
+                    btn.textContent = 'לא זמין כעת';
+                    setTimeout(hide, 1800);
+                    return;
+                }
+                btn.disabled = true;
+                btn.textContent = 'מבצע...';
+                deferredInstallEvent.prompt();
+                try {
+                    const choice = await deferredInstallEvent.userChoice;
+                    console.log('[PWA] userChoice', choice);
+                    if (choice.outcome === 'accepted') {
+                        btn.textContent = 'הותקן ✅';
+                        setTimeout(hide, 1500);
+                    } else {
+                        btn.textContent = 'נדחה – נסה שוב';
+                        btn.disabled = false;
+                    }
+                } catch(err){
+                    console.warn('Install prompt error', err);
+                    btn.textContent = 'שגיאה';
+                    btn.disabled = false;
+                }
+                deferredInstallEvent = null;
+            });
+
+            setTimeout(()=> { if(!deferredInstallEvent) hide(); }, 8000);
+        })();
+    </script>
+
+    <!-- Logout Function -->
+    <script>
+        function logout() {
+            if (confirm('האם אתה בטוח שברצונך לצאת מהמערכת?')) {
+                try {
+                    // ניקוי מלא של כל הנתונים
+                    localStorage.removeItem('gibushAuthState');
+                    localStorage.removeItem('gibushAppState');
+                    
+                    // ניקוי נתוני state אם CONFIG זמין
+                    if (typeof CONFIG !== 'undefined' && CONFIG.APP_STATE_KEY) {
+                        localStorage.removeItem(CONFIG.APP_STATE_KEY);
+                    }
+                    
+                    // ניקוי כללי של כל מפתחות האפליקציה
+                    const keysToRemove = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && (key.startsWith('gibush') || key.startsWith('sprintAppState'))) {
+                            keysToRemove.push(key);
+                        }
+                    }
+                    keysToRemove.forEach(key => localStorage.removeItem(key));
+                    
+                    console.log('🚪 יציאה מהמערכת - כל הנתונים נמחקו');
+                    window.location.href = './landing.html';
+                } catch (error) {
+                    console.error('שגיאה ביציאה:', error);
+                    window.location.href = './landing.html';
+                }
+            }
+        }
+    </script>
+
+    <script>
+      // עדכון גרסת כותרת אחרי טעינת הקונפיג
+      document.addEventListener('DOMContentLoaded', () => {
+        try {
+          const ver = window.APP_VERSION || (window.LANDING_CONFIG?.branding?.version) || '';
+          const el = document.getElementById('version-text');
+          if (el) el.textContent = ver ? `גרסה: ${ver}` : '';
+        } catch(e){ /* silent */ }
+      });
+    </script>
+</body>
+
+</html>

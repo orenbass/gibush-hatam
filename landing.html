@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>מערכת גיבוש חת"מ - התחברות</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="gsi-script" src="https://accounts.google.com/gsi/client" async defer onload="window.__gsiLoaded=true;console.log('GSI script loaded');"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Metadata -->
+    <link rel="manifest" href="./manifest.webmanifest">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="application-name" content="Gibush">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/thumbnail_gibush_192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icons/thumbnail_gibush_192.png">
+    <link rel="apple-touch-icon" href="./icons/thumbnail_gibush_192.png">
+    
+    <!-- iOS PWA metadata -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gibush">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Config -->
+    <script src="./js/config/app-version.js"></script>
+    <script src="./js/config/users-config.js"></script>
+    <script src="./js/config/config.js"></script>
+    
+    <!-- Google Drive Services -->
+    <script src="./js/services/google-drive-reader.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Heebo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* מניעת זום וכפתורים נוספים */
+        html, body {
+            touch-action: manipulation; /* מניעת זום כפול */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* מניעת זום בכל האלמנטים */
+        * {
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* עיצוב בסיסי של מיכל Google - ללא התערבות */
+        .google-signin-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        /* רקע מתקדם עם גרדיאנט וטקסטורה */
+        .landing-bg {
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #1e3a8a 0%, #3730a3 25%, #581c87 50%, #7c2d12 75%, #1f2937 100%);
+            position: relative;
+        }
+        
+        .landing-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.03) 1px, transparent 1px),
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px, 120px 120px;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+        
+        /* כרטיס התחברות מתקדם */
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            box-shadow: 
+                0 32px 64px rgba(0, 0, 0, 0.1),
+                0 16px 32px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+            opacity: 0.8;
+        }
+        
+        /* לוגו מתקדם */
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8, #1e40af);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 
+                0 20px 40px rgba(59, 130, 246, 0.3),
+                0 10px 20px rgba(59, 130, 246, 0.2),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            animation: logoFloat 4s ease-in-out infinite;
+            overflow: hidden;
+        }
+        
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            border-radius: 50%;
+            z-index: -1;
+            animation: logoRotate 8s linear infinite;
+        }
+        
+        .logo-text {
+            font-size: 3rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* תמונת הלוגו */
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-8px) scale(1.05); }
+        }
+        
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* כפתורי התחברות מתקדמים */
+        .google-btn {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            background-size: 300% 300%;
+            border: none;
+            border-radius: 16px;
+            padding: 16px 24px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: gradientShift 4s ease infinite;
+            box-shadow: 0 8px 24px rgba(66, 133, 244, 0.3);
+        }
+        
+        .google-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(66, 133, 244, 0.4);
+        }
+        
+        .google-btn:active {
+            transform: translateY(0px) scale(0.98);
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .guest-btn {
+            background: linear-gradient(135deg, #6b7280, #4b5563, #374151);
+            border: none;
+            border-radius: 16px;
+            padding: 16px 24px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(107, 114, 128, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .guest-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(107, 114, 128, 0.3);
+            background: linear-gradient(135deg, #4b5563, #374151, #1f2937);
+        }
+        
+        .guest-btn:active {
+            transform: translateY(0px) scale(0.98);
+        }
+        
+        /* אפקטי ריצה (ripple) */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-ripple::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .btn-ripple:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* אנימציות כניסה */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .fade-in-delay-1 { animation-delay: 0.2s; }
+        .fade-in-delay-2 { animation-delay: 0.4s; }
+        .fade-in-delay-3 { animation-delay: 0.6s; }
+        .fade-in-delay-4 { animation-delay: 0.8s; }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* תיקון עבור מסכים קטנים */
+        @media (max-width: 640px) {
+            .google-signin-container div[role="button"] {
+                width: 100% !important;
+                min-width: 100% !important;
+                max-width: 100% !important;
+                height: 48px !important;
+            }
+        }
+        
+        /* מסך טעינה מתקדם */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* הודעות שגיאה */
+        .error-message {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* רספונסיבי */
+        @media (max-width: 640px) {
+            .auth-card {
+                margin: 1rem;
+                border-radius: 20px;
+            }
+            
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .logo-text {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="landing-bg min-h-screen flex items-center justify-center">
+    <!-- מסך טעינה -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-white text-lg font-medium">מתחבר למערכת...</p>
+        </div>
+    </div>
+
+    <!-- תוכן ראשי -->
+    <div class="w-full max-w-md mx-4">
+        <div class="auth-card p-8 text-center">
+            <!-- לוגו -->
+            <div class="logo-container mb-8 fade-in">
+                <div class="logo mx-auto">
+                    <img src="./icons/login_app.png" alt="לוגו מערכת גיבוש" class="logo-image">
+                </div>
+            </div>
+            
+            <!-- כותרת -->
+            <div class="mb-8 fade-in fade-in-delay-1">
+                <h1 class="text-4xl font-bold text-gray-800 mb-3">
+                    מערכת גיבוש חת"מ
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    מערכת דיגיטלית מתקדמת לניהול ומעקב אחר תהליכי גיבוש
+                </p>
+                <div class="mt-4">
+                    <span id="landing-version-badge" class="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+                        <!-- version populated dynamically -->
+                    </span>
+                </div>
+            </div>
+            
+            <!-- כפתורי התחברות -->
+            <div class="space-y-4 fade-in fade-in-delay-2">
+                <!-- התחברות Google -->
+                <div class="google-signin-container">
+                    <div id="googleSignInDiv"></div>
+                </div>
+                
+                <!-- מפריד -->
+                <div class="relative my-6 fade-in fade-in-delay-3">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t-2 border-gray-200"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-4 bg-white text-gray-500 font-medium">או</span>
+                    </div>
+                </div>
+                
+                <!-- כניסת אורח -->
+                <button id="guestLoginBtn" class="guest-btn btn-ripple w-full fade-in fade-in-delay-4 flex items-center justify-center gap-3">
+                    <span class="text-2xl">👤</span>
+                    <span>כניסה כאורח</span>
+                </button>
+            </div>
+            
+            <!-- הודעת שגיאה -->
+            <div id="errorMessage" class="mt-6 hidden"></div>
+            
+            <!-- מידע נוסף -->
+            <div class="mt-8 text-center text-sm text-gray-500 fade-in fade-in-delay-4">
+                <p>© 2025 - כל הזכויות שמורות</p>
+                <p class="mt-1">מערכת מאובטחת ומוצפנת</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- חלון הגדרת פרטי קבוצה -->
+    <div id="groupSetupModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 hidden">
+        <div class="auth-card p-8 w-full max-w-md mx-4 text-right relative">
+            <!-- כפתור X לחזרה -->
+            <button id="backToLoginBtn" class="absolute top-4 left-4 w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 hover:text-gray-800 transition-colors z-10">
+                <span class="text-lg font-bold">×</span>
+            </button>
+            
+            <h3 class="text-2xl font-bold mb-6 text-center text-blue-600">הגדרת פרטי הערכה</h3>
+            <p class="text-gray-700 mb-6 text-center">אנא הזן את פרטי ההערכה כדי להמשיך</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-right mb-2 text-sm font-medium text-gray-700">שם המעריך:</label>
+                    <input type="text" id="evaluatorName" 
+                           class="w-full p-3 border-2 border-gray-300 rounded-lg text-lg text-right bg-white focus:border-blue-500 focus:outline-none transition-colors" 
+                           placeholder="הכנס שם מעריך" 
+                           style="font-family: 'Heebo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+                </div>
+                <div>
+                    <label class="block text-right mb-2 text-sm font-medium text-gray-700">מספר קבוצה:</label>
+                    <input type="text" id="groupNumber" 
+                           class="w-full p-3 border-2 border-gray-300 rounded-lg text-lg text-right bg-white focus:border-blue-500 focus:outline-none transition-colors" 
+                           placeholder="הכנס מספר קבוצה">
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <button id="saveGroupDetailsBtn" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105">
+                    המשך למערכת
+                </button>
+            </div>
+            
+            <div id="groupSetupError" class="mt-4 text-red-500 text-center text-sm hidden"></div>
+        </div>
+    </div>
+
+    <script src="./landing-auth.js"></script>
+    <script>
+      // עדכון גרסה בדף הנחיתה באופן דינמי לפי app-version.js
+      document.addEventListener('DOMContentLoaded', () => {
+        try {
+          const raw = window.APP_VERSION || (window.LANDING_CONFIG?.branding?.version) || '';
+          const display = raw.replace(/^v/i,'');
+          const badge = document.getElementById('landing-version-badge');
+          if (badge) badge.textContent = display ? `גרסה ${display}` : '';
+        } catch(e) { /* silent */ }
+      });
+    </script>
+</body>
+</html>

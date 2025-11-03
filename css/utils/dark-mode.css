@@ -1,0 +1,252 @@
+/* ========================================
+   Dark Mode Styles
+   ======================================== */
+
+.dark body {
+  background-color: #1a202c;
+  color: #e2e8f0;
+}
+
+/* רקע לבן במצב כהה - למעט תפריטי ניווט */
+.dark .bg-white:not(nav) {
+  background-color: #2d3748;
+}
+
+/* תפריט ניווט ראשי - מותאם במיוחד */
+.dark nav.bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #2a2a2a;
+}
+
+.dark .bg-gray-100 {
+  background-color: #4a5568;
+}
+
+.dark .bg-gray-200 {
+  background-color: #718096;
+}
+
+.dark .bg-gray-300:not(.selected) {
+  background-color: #4a5568;
+}
+
+.dark .text-gray-800 {
+  color: #f7fafc;
+}
+
+.dark .text-gray-700 {
+  color: #edf2f7;
+}
+
+.dark .text-gray-600 {
+  color: #a0aec0;
+}
+
+.dark .text-gray-500 {
+  color: #718096;
+}
+
+.dark .text-blue-600 {
+  color: #63b3ed;
+}
+
+.dark .border-b-2.border-blue-500 {
+  border-color: #63b3ed;
+}
+
+.dark .text-blue-500 {
+  color: #63b3ed;
+}
+
+.dark .border-gray-200 {
+  border-color: #4a5568;
+}
+
+.dark .border-gray-300 {
+  border-color: #718096;
+}
+
+.dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.dark .shadow-inner {
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.dark input,
+.dark textarea {
+  background-color: #4a5568;
+  color: #f7fafc;
+  border-color: #718096;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #a0aec0;
+}
+
+/* Dark mode for buttons */
+.dark #sack-carrier-container .runner-sack-btn.selected,
+.dark #stretcher-carrier-container .runner-stretcher-btn.selected,
+.dark #jerrican-carrier-container .runner-jerrican-btn.selected {
+  color: white;
+}
+
+.dark .highlight-gold {
+  background-color: #FFD700;
+  color: #1a202c;
+}
+
+.dark .highlight-silver {
+  background-color: #C0C0C0;
+  color: #1a202c;
+}
+
+.dark .highlight-bronze {
+  background-color: #CD7F32;
+  color: #1a202c;
+}
+
+/* Dark mode modals */
+.dark #confirmation-modal .bg-white {
+  background-color: #2d3748;
+}
+
+.dark #confirmation-modal #cancel-btn {
+  background-color: #4a5568;
+  color: #f7fafc;
+}
+
+.dark #confirmation-modal #cancel-btn:hover {
+  background-color: #718096;
+}
+
+.dark .loading-box {
+  background-color: #1f2937;
+  color: #f1f5f9;
+}
+
+.dark .spinner {
+  border-color: #374151;
+  border-top-color: #60a5fa;
+}
+
+/* Dark mode for comment buttons */
+.dark .comment-btn {
+  background: #374151;
+  color: #e2e8f0;
+  border-color: #4b5563;
+}
+
+.dark .comment-btn:hover {
+  background: #425065;
+  border-color: #64748b;
+}
+
+.dark .comment-btn.comment-level-0:not(.comment-btn-empty),
+.dark .comment-btn.comment-level-0 {
+  background: #641414;
+  color: #fecaca;
+  border-color: #991b1b;
+  box-shadow: 0 0 0 1px #b91c1c inset;
+}
+
+.dark .comment-btn.comment-level-1:not(.comment-btn-empty) {
+  background: #5a250c;
+  color: #fed7aa;
+  border-color: #9a3412;
+  box-shadow: 0 0 0 1px #c2410c inset;
+}
+
+.dark .comment-btn.comment-level-2:not(.comment-btn-empty) {
+  background: #5a3a05;
+  color: #fde68a;
+  border-color: #854d0e;
+  box-shadow: 0 0 0 1px #ca8a04 inset;
+}
+
+.dark .comment-btn.comment-level-3:not(.comment-btn-empty) {
+  background: #55520a;
+  color: #fef08a;
+  border-color: #713f12;
+  box-shadow: 0 0 0 1px #eab308 inset;
+}
+
+.dark .comment-btn.comment-level-4:not(.comment-btn-empty) {
+  background: #25420a;
+  color: #d9f99d;
+  border-color: #3f6212;
+  box-shadow: 0 0 0 1px #65a30d inset;
+}
+
+.dark .comment-btn.comment-level-5:not(.comment-btn-empty) {
+  background: #094226;
+  color: #bbf7d0;
+  border-color: #166534;
+  box-shadow: 0 0 0 1px #059669 inset;
+}
+
+.dark .comment-btn:not(.comment-btn-empty):hover {
+  filter: brightness(1.05);
+}
+
+/* Dark mode Sprint comment buttons */
+.dark .comment-btn.sprint-comment-btn.comment-level-0 {
+  background: #450a0a;
+  border-color: #991b1b;
+  color: #fecaca;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-1 {
+  background: #431407;
+  border-color: #c2410c;
+  color: #fed7aa;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-2 {
+  background: #422006;
+  border-color: #b45309;
+  color: #fde68a;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-3 {
+  background: #444003;
+  border-color: #a16207;
+  color: #fef08a;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-4 {
+  background: #1a2e05;
+  border-color: #4d7c0f;
+  color: #d9f99d;
+}
+
+.dark .comment-btn.sprint-comment-btn.comment-level-5 {
+  background: #062813;
+  border-color: #16a34a;
+  color: #bbf7d0;
+}
+
+/* Dark mode Heat buttons */
+.dark .heat-btn.edit {
+  background: var(--accent-2);
+  color: #111827;
+}
+
+.dark .heat-btn.edit.editing {
+  background: var(--success);
+  color: white;
+}
+
+.dark .heat-btn.cancel {
+  background: var(--danger);
+  color: white;
+}
+
+.dark .heat-btn.cancel:hover {
+  background: #dc2626;
+}
