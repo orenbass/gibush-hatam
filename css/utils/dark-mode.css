@@ -125,6 +125,26 @@
   background-color: #718096;
 }
 
+/* Dark mode modal alert color accessibility overrides */
+.dark #confirmation-modal .bg-red-50 { background-color:#3f1d23; } /* Danger backdrop */
+.dark #confirmation-modal .text-red-700 { color:#fca5a5; }
+.dark #confirmation-modal .border-red-300 { border-color:#7f1d1d; }
+
+.dark #confirmation-modal .bg-amber-50 { background-color:#3b2a14; } /* Warning backdrop */
+.dark #confirmation-modal .text-amber-700 { color:#fcd34d; }
+.dark #confirmation-modal .border-amber-300 { border-color:#b45309; }
+
+.dark #confirmation-modal .bg-blue-50 { background-color:#1e3a5f; } /* Info backdrop */
+.dark #confirmation-modal .text-blue-700 { color:#93c5fd; }
+.dark #confirmation-modal .border-blue-300 { border-color:#1d4ed8; }
+
+.dark #confirmation-modal .bg-green-50 { background-color:#143826; } /* Success backdrop */
+.dark #confirmation-modal .text-green-700 { color:#86efac; }
+.dark #confirmation-modal .border-green-300 { border-color:#15803d; }
+
+/* Ensure paragraph text inside modal remains high contrast */
+.dark #confirmation-modal p.text-gray-800 { color:#e2e8f0; }
+
 .dark .loading-box {
   background-color: #1f2937;
   color: #f1f5f9;
