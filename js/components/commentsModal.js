@@ -419,21 +419,30 @@
     const micBtn = backdrop.querySelector('[data-mic]');
     const micStatus = backdrop.querySelector('[data-mic-status]');
 
-    // טעינת מערכת המיקרופון המאוחדת אם לא קיימת
-    if (!window.attachCommentMic) {
-      const script = document.createElement('script');
-      script.src = 'js/utils/comment-mic.js';
-      script.onload = () => {
-        if (window.attachCommentMic && micBtn && inputNew) {
+    // זיהוי מכשיר אפל (iOS + iPadOS המדווח כ-Mac)
+    const ua = navigator.userAgent || navigator.vendor || '';
+    const isIOS = /iPad|iPhone|iPod/i.test(ua);
+    const isMacTouch = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1; // iPadOS
+    const isApple = isIOS || isMacTouch;
+
+    // טעינת מערכת המיקרופון המאוחדת אם לא קיימת, רק אם לא אפל
+    if (!isApple) {
+      if (!window.attachCommentMic) {
+        const script = document.createElement('script');
+        script.src = 'js/utils/comment-mic.js';
+        script.onload = () => {
+          if (window.attachCommentMic && micBtn && inputNew) {
+            window.attachCommentMic(micBtn, inputNew);
+          }
+        };
+        document.head.appendChild(script);
+      } else {
+        if (micBtn && inputNew) {
           window.attachCommentMic(micBtn, inputNew);
         }
-      };
-      document.head.appendChild(script);
-    } else {
-      // אם כבר קיימת - חבר מיד
-      if (micBtn && inputNew) {
-        window.attachCommentMic(micBtn, inputNew);
       }
+    } else if (micBtn) {
+      micBtn.style.display = 'none';
     }
 
     // הסתרת סטטוס מיקרופון (לא נדרש עם המערכת החדשה)
