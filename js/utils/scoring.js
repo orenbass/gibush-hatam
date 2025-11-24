@@ -290,9 +290,9 @@
         heatResults.push({
           heatIndex: idx + 1,
           heatName: `מקצה ${idx + 1}`,
-          role: 'לא השתתף',
-          score: null,
-          participated: false
+          role: 'השתתף - לא נבחר',
+          score: 1,
+          participated: true
         });
       }
     });
@@ -574,4 +574,5 @@
   window.exportSprintResultsForExcel ??= exportSprintResultsForExcel;
   window.computeSociometricStretcherHeatScores ??= computeSociometricStretcherHeatScores;
   window.getRunnerStretcherDetails ??= getRunnerStretcherDetails;
+
 })();
