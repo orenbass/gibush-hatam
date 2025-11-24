@@ -253,7 +253,7 @@
         <div class="qc-row qc-row-input">
           <div class="qc-input-row">
             <input id="quick-comment-input" type="text" class="qc-input" placeholder="כתוב הערה...">
-            <button id="quick-comment-mic" class="qc-micBtn" aria-label="הכתבה קולית" title="הכתבה קולית">🎤</button>
+            <button id="quick-comment-mic" class="qc-micBtn" data-mic aria-label="הכתבה קולית" title="הכתבה קולית">🎤</button>
             <button id="quick-comment-send" class="qc-sendBtn" disabled>
               <span class="send-text">שלח</span>
             </button>
@@ -303,6 +303,36 @@
     inputEl.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!sendBtn.disabled) send(); }
     });
+
+    // === התחלת שינוי מיקרופון – שימוש ברכיב unify (attachCommentMic) ===
+    const isIOS = /iP(hone|ad|od)/i.test(navigator.userAgent); // iOS (Safari mobile) – אין תמיכה ב-Web Speech API
+    if (isIOS && micBtn) {
+      micBtn.style.display = 'none';
+    } else if (micBtn && window.attachCommentMic) {
+      // שימוש באותו מנגנון מהמוביל (commentsModal): לחיצה ארוכה מקליטה, סיום משחרר
+      try { window.attachCommentMic(micBtn, inputEl); } catch(e){ console.warn('attachCommentMic failed', e); }
+    } else {
+      // Fallback ישן אם attachCommentMic לא זמין – נשאיר מינימלי
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SR && micBtn){
+        let recognition = new SR();
+        recognition.lang = 'he-IL'; recognition.continuous=false; recognition.interimResults=false;
+        let isRecording=false;
+        const startRec = e=>{ e.preventDefault(); if(!isRecording){ try{ recognition.start(); isRecording=true; micBtn.classList.add('recording'); micBtn.textContent='🛑'; }catch{}} };
+        const stopRec  = e=>{ e.preventDefault(); if(isRecording){ try{ recognition.stop(); }catch{} } };
+        recognition.onresult = ev=>{ const tr=ev.results[0][0].transcript||''; inputEl.value=tr; inputEl.dispatchEvent(new Event('input',{bubbles:true})); };
+        recognition.onerror = ()=>{ isRecording=false; micBtn.classList.remove('recording'); micBtn.textContent='🎤'; };
+        recognition.onend    = ()=>{ isRecording=false; micBtn.classList.remove('recording'); micBtn.textContent='🎤'; };
+        micBtn.addEventListener('mousedown', startRec);
+        micBtn.addEventListener('mouseup', stopRec);
+        micBtn.addEventListener('mouseleave', stopRec);
+        micBtn.addEventListener('touchstart', startRec, { passive:false });
+        micBtn.addEventListener('touchend', stopRec);
+      } else if (micBtn) {
+        micBtn.title = 'הקלטה קולית אינה נתמכת בדפדפן זה';
+      }
+    }
+    // === סוף שינוי מיקרופון ===
 
     function buildGroupModalContent(){
       const mk = (cls,title,arr)=> (Array.isArray(arr)&&arr.length)?`
@@ -423,46 +453,6 @@
         }
       }, 50);
     });
-
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognition = null, isRecording = false;
-    
-    // הסתרת המיקרופון רק במכשירי iOS (לא Mac!) כי Safari iOS לא תומך ב-Web Speech API
-    const isIOS = /iP(hone|ad|od)/i.test(navigator.userAgent);
-    
-    if (isIOS && micBtn) {
-      // במכשירי iOS - מסתירים לגמרי את כפתור המיקרופון
-      micBtn.style.display = 'none';
-    } else if (SR) {
-      // יש תמיכה ב-Web Speech API - מפעילים הקלטה
-      recognition = new SR();
-      recognition.lang = 'he-IL';
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript || '';
-        inputEl.value = transcript;
-        updateSendEnabled();
-      };
-      recognition.onerror = () => { isRecording = false; micBtn.classList.remove('recording'); micBtn.textContent = '🎤'; };
-      recognition.onend = () => { isRecording = false; micBtn.classList.remove('recording'); micBtn.textContent = '🎤'; };
-      const startRec = (e) => {
-        e.preventDefault();
-        if (!isRecording) {
-          try { recognition.start(); isRecording = true; micBtn.classList.add('recording'); micBtn.textContent = '🛑'; } catch {}
-        }
-      };
-      const stopRec = (e) => { e.preventDefault(); if (isRecording) recognition.stop(); };
-      micBtn.addEventListener('mousedown', startRec);
-      micBtn.addEventListener('mouseup', stopRec);
-      micBtn.addEventListener('mouseleave', stopRec);
-      micBtn.addEventListener('touchstart', startRec, { passive: false });
-      micBtn.addEventListener('touchend', stopRec);
-    } else if (micBtn) {
-      // אין תמיכה ב-Web Speech API - מציגים הודעה
-      micBtn.title = "הקלטה קולית דורשת דפדפן תומך ו-HTTPS.";
-    }
 
     // מעקב אחר שינויים ברשימת הרצים
     if (window._quickCommentsObserver) {

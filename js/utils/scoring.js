@@ -576,4 +576,3 @@
   window.getRunnerStretcherDetails ??= getRunnerStretcherDetails;
 
 })();
-
