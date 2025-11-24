@@ -291,7 +291,7 @@
           heatIndex: idx + 1,
           heatName: `מקצה ${idx + 1}`,
           role: 'לא השתתף',
-          score: null,
+          score: 1,
           participated: false
         });
       }
@@ -574,4 +574,5 @@
   window.exportSprintResultsForExcel ??= exportSprintResultsForExcel;
   window.computeSociometricStretcherHeatScores ??= computeSociometricStretcherHeatScores;
   window.getRunnerStretcherDetails ??= getRunnerStretcherDetails;
+
 })();
