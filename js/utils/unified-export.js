@@ -514,14 +514,18 @@ window.GibushAppExporter.createDetailedReport = function createDetailedReport() 
           const shoulderNumber = runner.shoulderNumber;
           const rec = heatScoreMap ? heatScoreMap[String(shoulderNumber)] : undefined;
           let role, score;
-          if (rec) {
-            role = rec.role; // 'אלונקה' | 'ג'ריקן' | 'השתתף - לא נבחר'
-            score = rec.score; // מספר (כולל שברים 6.5 וכו') או 1
-          } else {
-            // לא השתתף כלל במקצה זה
-            role = 'לא השתתף';
-            score = 'לא השתתף';
-          }
+        if (rec) {
+  role = rec.role; // עדיין נשאר מהנתונים הקיימים
+  score = rec.score;
+} else if (status === 'פעיל') {
+  // משתתף פעיל שלא נבחר
+  role = 'השתתף - לא נבחר';
+  score = 1; 
+} else {
+  // למקרים של "לא השתתף"
+  role = 'לא השתתף';
+  score = 'לא השתתף';
+}
           
           const rowData = [
             shoulderNumber,
