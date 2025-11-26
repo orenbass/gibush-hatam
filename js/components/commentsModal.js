@@ -10,8 +10,10 @@
       .comment-modal{background:#ffffff;max-width:500px;width:100%;border-radius:16px;padding:18px 18px 14px;box-shadow:0 4px 18px -2px rgba(0,0,0,.25);animation:cmIn .18s ease;margin-top:0}
       .dark .comment-modal{background:#1f2937;color:#e2e8f0}
       @keyframes cmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-      .comment-modal h3{margin:0 0 4px;font-size:16px;font-weight:700}
-      .note-muted{font-size:11px;opacity:.65;margin:4px 0 10px}
+      .comment-modal h3{margin:0 0 4px;font-size:16px;font-weight:700;color:#111827}
+      .dark .comment-modal h3{color:#f3f4f6}
+      .note-muted{font-size:11px;opacity:.65;margin:4px 0 10px;color:#64748b}
+      .dark .note-muted{color:#94a3b8}
       .comment-modal .add-row input{background:#f8fafc;border:1px solid #cbd5e1;color:#1e293b;border-radius:10px}
       .dark .comment-modal .add-row input{background:#374151;border-color:#475569;color:#f1f5f9}
       .comment-modal .c-row{background:#f1f5f9}
@@ -21,7 +23,7 @@
       .comment-modal .c-edit{
         background:#f8fafc;
         border:1px solid #cbd5e1;
-        color:#1e293b;
+        color:#111827;
         border-radius:10px;
       }
       .dark .comment-modal input[type="text"],
@@ -112,7 +114,7 @@
 
       .comment-mic-btn{
         position:relative;
-        border:1px solid #cbd5e1;
+        border:1.5px solid #cbd5e1;
         background:#ffffff;
         width:38px;
         height:38px;
@@ -124,13 +126,18 @@
         color:#334155;
         font-size:18px;
         transition:.18s;
+        box-shadow:0 1px 2px rgba(0,0,0,0.05);
       }
       .dark .comment-mic-btn{
         background:#1f2937;
         border-color:#475569;
         color:#cbd5e1;
       }
-      .comment-mic-btn:hover{background:#f1f5f9}
+      .comment-mic-btn:hover{
+        background:#f1f5f9;
+        border-color:#94a3b8;
+        box-shadow:0 2px 4px rgba(0,0,0,0.08);
+      }
       .dark .comment-mic-btn:hover{background:#273549}
       .comment-mic-btn.listening{
         background:#dc2626;
@@ -172,12 +179,31 @@
         font-size:16px;
       }
       .comment-mic-btn.listening{
-        /* שמירה – רק הקטנה קלה של ה-radius */
         border-radius:10px;
       }
       .comment-mic-status{
         margin-top:2px;
         font-size:10px;
+      }
+      
+      /* תיקון צבעי טקסט במצב בהיר */
+      .comment-modal .c-row {
+        color: #111827;
+      }
+      .dark .comment-modal .c-row {
+        color: #f3f4f6;
+      }
+      .comment-modal .c-text {
+        color: #111827;
+      }
+      .dark .comment-modal .c-text {
+        color: #f3f4f6;
+      }
+      .comment-modal .c-row > div:first-child {
+        color: #374151;
+      }
+      .dark .comment-modal .c-row > div:first-child {
+        color: #9ca3af;
       }
     `;
     document.head.appendChild(st);
@@ -236,13 +262,18 @@
 
         <div class="note-muted">הוסף כמה הערות. ניתן לערוך ולמחוק כל שורה.</div>
 
-        <div class="add-row" style="display:flex;align-items:center;margin-bottom:4px">
-          <input id="new-comment-input" type="text" placeholder="כתוב הערה חדשה..." style="flex:1;min-width:0" />
-          <button class="comment-mic-btn" type="button" data-mic title="הקלטה בלחיצה ארוכה (Android)">
-            🎤
-            <span class="mic-dot"></span>
-          </button>
-          <button class="btn btn-primary" data-add style="padding:6px 10px;font-size:12px">הוסף</button>
+        <div class="add-row" style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <input id="new-comment-input" type="text" placeholder="כתוב הערה חדשה..." style="flex:1;min-width:0" />
+            <button class="comment-mic-btn" type="button" data-mic title="הקלטה בלחיצה ארוכה">
+              🎤
+              <span class="mic-dot"></span>
+            </button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button id="modal-preset-comments-btn" class="btn btn-outline" type="button" title="הערות מוכנות מראש" style="padding:6px 10px;font-size:12px;white-space:nowrap;flex:1">📝 הערות מוכנות</button>
+            <button class="btn btn-primary" data-add style="padding:6px 10px;font-size:12px;min-width:80px">הוסף</button>
+          </div>
         </div>
         <div class="comment-mic-status" data-mic-status></div>
         <div id="comments-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto;padding-right:2px">
@@ -257,6 +288,7 @@
     document.body.appendChild(backdrop);
 
     const inputNew = backdrop.querySelector('#new-comment-input');
+    const presetBtn = backdrop.querySelector('#modal-preset-comments-btn');
     setTimeout(()=>inputNew.focus(),30);
 
     function escHtml(s=''){
@@ -448,6 +480,113 @@
     // הסתרת סטטוס מיקרופון (לא נדרש עם המערכת החדשה)
     if (micStatus) {
       micStatus.style.display = 'none';
+    }
+
+    // NEW: טיפול בכפתור הערות מוכנות מראש
+    if (presetBtn) {
+      presetBtn.addEventListener('click', () => {
+        const GROUP = (window.CONFIG && window.CONFIG.CRAWLING_GROUP_COMMON_COMMENTS) || {};
+        const hasContent = (Array.isArray(GROUP.good) && GROUP.good.length > 0) ||
+                          (Array.isArray(GROUP.neutral) && GROUP.neutral.length > 0) ||
+                          (Array.isArray(GROUP.bad) && GROUP.bad.length > 0);
+        
+        if (!hasContent) {
+          if (window.showModal) {
+            window.showModal('אין הערות זמינות', 'לא הוגדרו הערות מוכנות מראש.');
+          } else {
+            alert('אין הערות מוכנות מראש זמינות');
+          }
+          return;
+        }
+
+        // שימוש באותה קומפוננטה כמו quick-comments.js
+        let presetBackdrop = document.getElementById('qc-group-backdrop-modal');
+        let presetModal = document.getElementById('qc-group-modal-modal');
+        
+        if (!presetBackdrop) {
+          presetBackdrop = document.createElement('div');
+          presetBackdrop.id = 'qc-group-backdrop-modal';
+          presetBackdrop.className = 'qc-group-modal-backdrop';
+          presetBackdrop.setAttribute('aria-hidden', 'true');
+          presetBackdrop.style.display = 'none';
+          presetBackdrop.style.zIndex = '10001'; // מעל מודל ההערות
+          document.body.appendChild(presetBackdrop);
+        }
+        
+        if (!presetModal) {
+          presetModal = document.createElement('div');
+          presetModal.id = 'qc-group-modal-modal';
+          presetModal.className = 'qc-group-modal';
+          presetModal.setAttribute('role', 'dialog');
+          presetModal.setAttribute('aria-modal', 'true');
+          presetModal.setAttribute('aria-label', 'בחירת הערה מקוטלגת');
+          presetModal.style.display = 'none';
+          presetModal.style.zIndex = '10002'; // מעל ה-backdrop
+          document.body.appendChild(presetModal);
+        }
+
+        // בניית התוכן
+        const mk = (cls,title,arr)=> (Array.isArray(arr)&&arr.length)?`
+          <div class="qc-group-box ${cls}">
+            <div class="qc-group-title">${title}</div>
+            <div class="qc-group-items">
+              ${arr.map(t=>`<span class="qc-group-item" data-value="${t}" role="button" tabindex="0">${t}</span>`).join('')}
+            </div>
+          </div>`:'';
+        
+        presetModal.innerHTML = `
+          <button class="qc-group-close" type="button" id="qc-group-close-modal">סגור ✕</button>
+          <h2>בחרו הערה</h2>
+          ${mk('good','חיובי',GROUP.good)}
+          ${mk('neutral','ניטרלי',GROUP.neutral)}
+          ${mk('bad','טעון שיפור',GROUP.bad)}`;
+
+        const closePreset = () => {
+          presetModal.style.display = 'none';
+          presetBackdrop.style.display = 'none';
+          presetBackdrop.setAttribute('aria-hidden', 'true');
+          inputNew.focus();
+        };
+
+        presetBackdrop.style.display = 'block';
+        presetModal.style.display = 'block';
+        presetBackdrop.setAttribute('aria-hidden', 'false');
+
+        // פוקוס על הפריט הראשון
+        setTimeout(() => {
+          presetModal.querySelector('.qc-group-item')?.focus();
+        }, 50);
+
+        // סגירה בלחיצה על backdrop
+        presetBackdrop.onclick = closePreset;
+
+        // טיפול בלחיצות
+        presetModal.onclick = (e) => {
+          if (e.target.id === 'qc-group-close-modal') {
+            closePreset();
+            return;
+          }
+          
+          const item = e.target.closest('.qc-group-item');
+          if (item) {
+            const value = item.getAttribute('data-value');
+            inputNew.value = (inputNew.value ? inputNew.value.trimEnd() + ' ' : '') + value;
+            inputNew.dispatchEvent(new Event('input', {bubbles: true}));
+            closePreset();
+          }
+        };
+
+        // תמיכה במקלדת
+        presetModal.onkeydown = (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('qc-group-item')) {
+            e.preventDefault();
+            e.target.click();
+          }
+          if (e.key === 'Escape') {
+            closePreset();
+          }
+        };
+      });
     }
   }
 

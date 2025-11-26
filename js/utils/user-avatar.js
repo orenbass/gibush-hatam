@@ -127,13 +127,26 @@ function onAvatarClick() {
         }
     })();
 
+    // בדיקת משתמש אורח
+    const isGuest = (() => {
+        try {
+            const saved = localStorage.getItem('gibushAuthState');
+            if (!saved) return true;
+            const session = JSON.parse(saved);
+            return session?.authState?.authMethod === 'guest';
+        } catch (e) {
+            return true;
+        }
+    })();
+
     // יצירת תוכן התפריט
     const menuItems = [
         { id: 'admin-settings', icon: '⚙️', text: 'הגדרות מנהל', adminOnly: true },
         { id: 'reset-app', icon: '🔄', text: 'אפס אפליקציה', color: '#ef4444' },
         { id: 'update-app', icon: '⬇️', text: 'עדכון אפליקציה', color: '#2563eb' },
+        { id: 'release-notes', icon: '📝', text: 'מה חדש?', color: '#0ea5e9' },
         { type: 'separator' },
-        { id: 'backup-upload', icon: '☁️', text: 'שלח גיבוי למנהל', color: '#6366f1' },
+        { id: 'backup-upload', icon: '☁️', text: 'שלח גיבוי למנהל', color: '#6366f1', guestHidden: true },
         { id: 'backup-download', icon: '💾', text: 'הורד גיבוי', color: '#8b5cf6' },
         { id: 'backup-import', icon: '📤', text: 'טען גיבוי', color: '#10b981' },
         { type: 'separator' },
@@ -147,6 +160,11 @@ function onAvatarClick() {
         
         // דילוג על פריטי מנהל if לא מנהל
         if (item.adminOnly && !isAdmin) {
+            return '';
+        }
+
+        // דילוג על פריטים מוסתרים לאורחים
+        if (item.guestHidden && isGuest) {
             return '';
         }
 
@@ -227,6 +245,7 @@ function onAvatarClick() {
         'admin-settings': window.handleAdminSettingsClick,
         'reset-app': handleResetApp,
         'update-app': handleUpdateApp,
+        'release-notes': handleOpenReleaseNotes,
         'backup-upload': handleBackupUpload,
         'backup-download': handleBackupDownload,
         'backup-import': handleBackupImport,
@@ -365,6 +384,49 @@ async function handleBackupUpload() {
     await window.CompactBackup.createAndUploadCompactBackup(window.showModal);
 }
 
+function handleOpenReleaseNotes() {
+    try {
+        const notesApi = window.ReleaseNotes;
+        if (!notesApi || typeof notesApi.buildHtml !== 'function') {
+            window.showModal?.('מה חדש?', 'לא נמצאו רשומות עדכון זמינות.', () => {}, false, null, {
+                confirmText: 'סגור',
+                cancelText: null,
+                hideCancel: true
+            });
+            return;
+        }
+
+        const versions = typeof notesApi.collectVersions === 'function'
+            ? notesApi.collectVersions(window.APP_VERSION, 1)
+            : [];
+        const targetVersion = window.APP_VERSION || (versions.length ? versions[0] : null);
+        const releaseNotesHtml = notesApi.buildHtml({ version: targetVersion, includePrevious: 1 }) || '';
+
+        if (!releaseNotesHtml) {
+            window.showModal?.('מה חדש?', 'אין פרטי גרסה זמינים כרגע.', () => {}, false, null, {
+                confirmText: 'סגור',
+                cancelText: null,
+                hideCancel: true
+            });
+            return;
+        }
+
+        window.showModal?.('מה חדש?', '', () => {}, false, null, {
+            confirmText: 'סגור',
+            cancelText: null,
+            hideCancel: true,
+            extraHtml: `<div style="margin-top:16px;text-align:right;direction:rtl;">${releaseNotesHtml}</div>`
+        });
+    } catch (error) {
+        console.warn('Release notes modal failed', error);
+        window.showModal?.('מה חדש?', 'אירעה שגיאה בטעינת פרטי הגרסה.', () => {}, false, null, {
+            confirmText: 'סגור',
+            cancelText: null,
+            hideCancel: true
+        });
+    }
+}
+
 function handleBackupDownload() {
     if (!window.CompactBackup) { 
         window.showModal('שגיאה','מודול גיבוי לא נטען'); 
@@ -453,3 +515,4 @@ window.onAvatarClick = onAvatarClick;
 
 // חשיפה לגלובל לשימוש בבאנר
 window.handleUpdateApp = window.handleUpdateApp || handleUpdateApp;
+window.handleOpenReleaseNotes = window.handleOpenReleaseNotes || handleOpenReleaseNotes;

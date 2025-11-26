@@ -14,6 +14,10 @@
       success: { icon: '✅', bg: 'bg-green-50',  border: 'border-green-300', heading: 'text-green-700', button: 'bg-green-600 hover:bg-green-700' }
     }[type];
 
+    const secondaryAction = options.secondaryAction;
+    const showCancel = options.hideCancel ? false : options.cancelText !== null;
+    const cancelText = options.cancelText ?? 'ביטול';
+
     const modalBackdrop = document.createElement('div');
     modalBackdrop.className = 'fixed inset-0 bg-black/55 backdrop-blur-sm flex justify-center items-center z-[9999] p-4';
     modalBackdrop.id = 'confirmation-modal';
@@ -39,7 +43,8 @@
           </div>
           <div class="px-6 pb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-start sm:flex-row-reverse">
             <button id="confirm-btn" class="${typeMeta.button} text-white font-semibold py-2.5 px-6 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors" aria-label="אישור פעולה">${options.confirmText || 'אישור'}</button>
-            <button id="cancel-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2.5 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors" aria-label="ביטול פעולה">${options.cancelText || 'ביטול'}</button>
+            ${secondaryAction ? `<button id="modal-secondary-btn" class="bg-white/80 hover:bg-white text-blue-700 font-semibold py-2.5 px-6 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-200 transition-colors" aria-label="${secondaryAction.ariaLabel || 'פעולת מידע'}">${secondaryAction.text || 'פרטים נוספים'}</button>` : ''}
+            ${showCancel ? `<button id="cancel-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2.5 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors" aria-label="ביטול פעולה">${cancelText}</button>` : ''}
           </div>
         </div>
       </div>`;
@@ -49,9 +54,10 @@
 
     const container = modalBackdrop.querySelector('[data-modal-container]');
     const confirmBtn = document.getElementById('confirm-btn');
-    const cancelBtn = document.getElementById('cancel-btn');
+    const cancelBtn = showCancel ? document.getElementById('cancel-btn') : null;
     const xBtn = document.getElementById('modal-x-btn');
     const inputEl = document.getElementById('modal-input');
+    const secondaryBtn = secondaryAction ? document.getElementById('modal-secondary-btn') : null;
 
     // פוקוס ראשוני
     setTimeout(()=> {
@@ -83,7 +89,7 @@
     }
 
     xBtn.addEventListener('click', close);
-    cancelBtn.addEventListener('click', close);
+    if (cancelBtn) cancelBtn.addEventListener('click', close);
     modalBackdrop.addEventListener('click', (e)=> { if (e.target === modalBackdrop) close(); });
 
     if (isInputModal) {
@@ -97,6 +103,28 @@
         if (onConfirm) onConfirm();
         close();
       };
+    }
+
+    if (secondaryBtn && typeof secondaryAction?.onClick === 'function') {
+      secondaryBtn.addEventListener('click', (event) => {
+        secondaryAction.onClick({
+          event,
+          close,
+          modal: modalBackdrop,
+          container,
+          confirmBtn,
+          cancelBtn,
+          inputEl
+        });
+      });
+
+      if (typeof secondaryAction?.onInit === 'function') {
+        secondaryAction.onInit({
+          modal: modalBackdrop,
+          container,
+          button: secondaryBtn
+        });
+      }
     }
   }
 

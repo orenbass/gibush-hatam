@@ -123,6 +123,16 @@
     const getCardClass = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
     const getRankDisplay = rank => rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
 
+    // Helper: בדיקת משתמש אורח
+    const isGuestUser = (() => {
+      try {
+        const saved = localStorage.getItem('gibushAuthState');
+        if(!saved) return true;
+        const session = JSON.parse(saved);
+        return session?.authState?.authMethod === 'guest';
+      } catch(e){ return true; }
+    })();
+
     contentDiv.innerHTML = `
       <div class="report-header-bar">
         <h2>דוח סיכום</h2>
@@ -167,7 +177,7 @@
       <div class="export-hint">עדכון ציון: יציאה מהשדה שומר. עריכת הערה: לחיצה על כפתור ההערה.</div>
 
       <div class="report-bottom-actions">
-        <button id="finish-gibush-btn" class="report-btn">🏁 סיים גיבוש</button>
+        ${!isGuestUser ? '<button id="finish-gibush-btn" class="report-btn">🏁 סיים גיבוש</button>' : ''}
         <button id="upload-drive-btn" class="report-btn">📤 שלח קובץ למנהל</button>
         <button id="export-excel-btn" class="report-btn">💾 הורדת אקסל</button>
       </div>
