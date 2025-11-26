@@ -11,4 +11,6 @@
   if (typeof self !== 'undefined') {
     self.APP_VERSION = APP_VERSION;
   }
+
 })();
+
