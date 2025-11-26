@@ -30,6 +30,7 @@
     
     <!-- Utils and config first -->
     <script src="./js/config/app-version.js"></script>
+    <script src="./js/config/release-notes.js"></script>
     <script src="./js/config/users-config.js"></script>
     <script src="./js/config/config.js"></script>
     <script src="./js/config/crawling-config.js"></script>
@@ -272,7 +273,9 @@
           if (installedVersion === currentVersion) return;
 
           // יצירת חלון צף מודאלי במרכז המסך
-          if (!document.getElementById('version-update-modal')) {
+                    if (!document.getElementById('version-update-modal')) {
+                        const releaseNotesHtml = window.ReleaseNotes?.buildHtml?.({ version: currentVersion, includePrevious: 1 }) || '';
+                        const hasReleaseNotes = !!releaseNotesHtml;
             // רקע כהה
             const overlay = document.createElement('div');
             overlay.id = 'version-update-modal-overlay';
@@ -299,7 +302,17 @@
                 <button id="btn-dismiss-version-modal" style="background:rgba(255,255,255,0.2);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;">
                   אחר כך
                 </button>
+                                ${hasReleaseNotes ? `
+                                    <button id="btn-notes-version-modal" style="background:rgba(255,255,255,0.18);color:#f8fafc;border:1px solid rgba(255,255,255,0.35);padding:12px 24px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;">
+                                        📋 מה חדש?
+                                    </button>
+                                ` : ''}
               </div>
+                            ${hasReleaseNotes ? `
+                                <div id="version-release-notes" style="display:none;margin-top:22px;text-align:right;direction:rtl;">
+                                    ${releaseNotesHtml}
+                                </div>
+                            ` : ''}
             `;
             
             // הוספת אנימציה
@@ -314,9 +327,13 @@
                 transform: translateY(-2px);
                 box-shadow: 0 6px 16px rgba(34,197,94,0.5) !important;
               }
-              #btn-dismiss-version-modal:hover {
-                background: rgba(255,255,255,0.3) !important;
-              }
+                            #btn-dismiss-version-modal:hover {
+                                background: rgba(255,255,255,0.3) !important;
+                            }
+                            #btn-notes-version-modal:hover {
+                                background: rgba(255,255,255,0.3) !important;
+                                border-color: rgba(255,255,255,0.55) !important;
+                            }
             `;
             document.head.appendChild(style);
             
@@ -340,6 +357,23 @@
               localStorage.setItem(installedVersionKey, currentVersion);
               overlay.remove();
             });
+
+                        const notesBtn = document.getElementById('btn-notes-version-modal');
+                        const notesPanel = document.getElementById('version-release-notes');
+                        if (notesBtn && notesPanel) {
+                            let isOpen = false;
+                            const updateLabel = () => {
+                                notesBtn.innerHTML = isOpen ? '✖ סגור מה חדש' : '📋 מה חדש?';
+                                notesBtn.setAttribute('aria-expanded', String(isOpen));
+                                notesPanel.style.display = isOpen ? 'block' : 'none';
+                                notesPanel.setAttribute('aria-hidden', String(!isOpen));
+                            };
+                            updateLabel();
+                            notesBtn.addEventListener('click', () => {
+                                isOpen = !isOpen;
+                                updateLabel();
+                            });
+                        }
 
             // סגירה בלחיצה על הרקע
             overlay.addEventListener('click', (e) => {

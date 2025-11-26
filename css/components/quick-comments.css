@@ -391,7 +391,7 @@
   transition: all 0.2s ease;
   text-align: right;
   margin-bottom: 0;
-  color: #1e293b;
+  color: #111827; /* תוקן: מ-#1e293b ל-#111827 - כהה הרבה יותר */
 }
 
 .qc-group-item::before {
@@ -401,7 +401,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
-  color: #475569;
+  color: #374151; /* תוקן: מ-#475569 ל-#374151 - כהה יותר */
   line-height: 1;
 }
 
@@ -410,7 +410,7 @@
   border-color: #3b82f6;
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15);
-  color: #0f172a;
+  color: #0f172a; /* תוקן: מ-#0f172a - נשאר כהה גם ב-hover */
 }
 
 .dark .qc-group-item {

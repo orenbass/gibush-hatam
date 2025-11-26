@@ -47,6 +47,8 @@
                 }
             }
             textarea.value = txt;
+            // הפעלת אירוע input כדי שכפתור השליחה יתעדכן
+            textarea.dispatchEvent(new Event('input', { bubbles: true }));
         };
         rec.onend = ()=>{
             // אם המערכת סגרה - ננקה
@@ -90,6 +92,8 @@
             isRecording = false;
             if (active && active.button === button){
                 stopActive(true);
+                // הפעלת אירוע input לאחר סיום הקלטה כדי לוודא עדכון UI
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
 

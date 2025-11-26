@@ -209,8 +209,18 @@
       res[sn] = { role: "ג'ריקן", score };
     });
 
-    // Determine participants: explicit participants array OR all keys from selections or orders
-    const participantSet = new Set();
+    // NEW: הוספת כל המתמודדים הפעילים באופן אוטומטי
+    const allActiveRunners = (window.state?.runners || [])
+      .filter(r => {
+        const sn = r.shoulderNumber;
+        const status = window.state?.crawlingDrills?.runnerStatuses?.[sn];
+        // רק פעילים - לא פרשו ולא הוסרו
+        return !status || status === 'פעיל' || status === 'active';
+      })
+      .map(r => String(r.shoulderNumber));
+
+    // Determine participants: all active runners + explicit participants + selections
+    const participantSet = new Set(allActiveRunners);
     (heat.participants || []).forEach(p => participantSet.add(String(p)));
     Object.keys(selections).forEach(sn => participantSet.add(String(sn)));
     (order.stretcher || []).forEach(sn => participantSet.add(String(sn)));
@@ -218,7 +228,7 @@
 
     // Any participant not selected gets baseline 1
     participantSet.forEach(sn => {
-      if (!res[sn]) res[sn] = { role: 'השתתף - לא נבחר', score: 1 };
+      if (!res[sn]) res[sn] = { role: 'לא נבחר', score: 1 };
     });
 
     return res; // map of shoulderNumber(string) -> {role, score}

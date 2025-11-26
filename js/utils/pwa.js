@@ -176,10 +176,37 @@
         markVersionInstalled(newVersion);
         if (window.showModal) {
           try {
+            const releaseNotesHtml = window.ReleaseNotes?.buildHtml?.({ version: newVersion, includePrevious: 1 }) || '';
+            const options = { confirmText: 'רענן עכשיו', cancelText: 'סגור' };
+
+            if (releaseNotesHtml) {
+              options.extraHtml = `<div id="modal-release-notes-container" style="display:none;margin-top:16px;">${releaseNotesHtml}</div>`;
+              options.secondaryAction = {
+                text: '📋 מה חדש?',
+                ariaLabel: 'הצג מה חדש בגרסה',
+                onInit: ({ modal, button }) => {
+                  button.setAttribute('aria-expanded', 'false');
+                  const panel = modal.querySelector('#modal-release-notes-container');
+                  if (panel) panel.setAttribute('aria-hidden', 'true');
+                },
+                onClick: ({ modal, button }) => {
+                  const panel = modal.querySelector('#modal-release-notes-container');
+                  if (!panel) return;
+                  const expanded = panel.getAttribute('data-open') === 'true';
+                  const next = !expanded;
+                  panel.style.display = next ? 'block' : 'none';
+                  panel.setAttribute('data-open', String(next));
+                  panel.setAttribute('aria-hidden', String(!next));
+                  button.innerHTML = next ? '✖ סגור מה חדש' : '📋 מה חדש?';
+                  button.setAttribute('aria-expanded', String(next));
+                }
+              };
+            }
+
             window.showModal('עדכון זמין', 'גרסה חדשה '+ newVersion +' זמינה. רענן לקבלת הקוד המעודכן.', () => {
               // פעולה ברירת מחדל: רענון קשה לאחר אישור
               try { window.PWA?.forceRefreshApp?.(); } catch(e){}
-            }, { confirmText: 'רענן עכשיו', cancelText: 'סגור' });
+            }, false, null, options);
           } catch(e){ console.warn('Modal show failed', e); }
         } else {
           console.log('[PWA] New version available:', newVersion);
