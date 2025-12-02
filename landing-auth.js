@@ -375,6 +375,17 @@ class LandingAuthManager {
      */
     processGoogleUser(userInfo) {
         try {
+            // **בדיקה ראשונה: האם המשתמש קיים בדיטאבייס?**
+            const isUserAuthorized = window.USERS_CONFIG?.isAuthorized(userInfo.email);
+            
+            if (!isUserAuthorized) {
+                console.warn(`🚫 משתמש לא מורשה: ${userInfo.email}`);
+                // הצגת התראה וכניסה במצב אורח
+                this.showUnauthorizedAlert(userInfo.email);
+                this.enterGuestModeWithEmail(userInfo);
+                return;
+            }
+            
             // **בדיקת הגדרות גישה - תיקון לוגיקה!**
             const dsRaw = localStorage.getItem('downloadedSystemSettings');
             const dsObj = dsRaw ? JSON.parse(dsRaw) : {};
@@ -450,6 +461,181 @@ class LandingAuthManager {
             this.showError('שגיאה בשמירת פרטי ההתחברות');
             this.showLoading(false);
         }
+    }
+
+    /**
+     * הצגת התראה שהמשתמש לא מורשה
+     */
+    showUnauthorizedAlert(email) {
+        this.showLoading(false);
+        
+        // יצירת overlay כהה
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            direction: rtl;
+        `;
+        
+        // יצירת מודל התראה
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 32px 28px;
+            max-width: 90%;
+            width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        `;
+        
+        modal.innerHTML = `
+            <div style="font-size: 48px; margin-bottom: 16px;">⛔</div>
+            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: #fef2f2;">אין הרשאה להכנס</h2>
+            <div style="font-size: 15px; margin-bottom: 8px; opacity: 0.95;">
+                כתובת המייל <strong style="direction: ltr; unicode-bidi: embed; display: inline-block;">${this.escapeHtml(email)}</strong>
+            </div>
+            <div style="font-size: 15px; color: #fee2e2; margin-bottom: 24px;">
+                לא רשומה במערכת
+            </div>
+            <div style="font-size: 14px; color: #fecaca; padding: 12px; background: rgba(0, 0, 0, 0.2); border-radius: 8px; margin-bottom: 24px;">
+                📌 אתה נכנס כ<strong>אורח</strong> עם הגבלות בתצוגה וטעינה.
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button id="btn-guest-continue" style="
+                    background: #22c55e;
+                    color: white;
+                    border: none;
+                    padding: 12px 28px;
+                    border-radius: 12px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+                    transition: all 0.2s;
+                ">
+                    ✓ הבנתי, כנס כאורח
+                </button>
+                <button id="btn-logout" style="
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: none;
+                    padding: 12px 28px;
+                    border-radius: 12px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                ">
+                    ← חזור להתחברות
+                </button>
+            </div>
+        `;
+        
+        // הוספת אנימציה אם לא קיימת
+        if (!document.getElementById('unauthorized-alert-styles')) {
+            const style = document.createElement('style');
+            style.id = 'unauthorized-alert-styles';
+            style.textContent = `
+                @keyframes modalSlideIn {
+                    from { transform: translateY(-50px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                #btn-guest-continue:hover {
+                    background: #16a34a !important;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.5) !important;
+                }
+                #btn-logout:hover {
+                    background: rgba(255, 255, 255, 0.3) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        // כפתור המשך כאורח
+        document.getElementById('btn-guest-continue').addEventListener('click', () => {
+            overlay.remove();
+        });
+        
+        // כפתור חזרה להתחברות
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            overlay.remove();
+            // ניקוי וחזרה לדף התחברות
+            localStorage.removeItem('gibushAuthState');
+            // ריענון הדף (הגוגל בוטן יופיע שוב)
+            location.reload();
+        });
+        
+        // סגירה בלחיצה על ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.body.contains(overlay)) {
+                overlay.remove();
+            }
+        });
+    }
+
+    /**
+     * כניסה במצב אורח עם שמירת פרטי הגוגל
+     */
+    enterGuestModeWithEmail(userInfo) {
+        try {
+            this.showLoading(true);
+            
+            const authState = {
+                authState: {
+                    isAuthenticated: true,
+                    authMethod: 'guest',
+                    googleUserInfo: {
+                        name: userInfo.name,
+                        email: userInfo.email,
+                        picture: userInfo.picture,
+                        verified: userInfo.email_verified || userInfo.verified_email
+                    },
+                    isInitialSetupComplete: false,
+                    isUnauthorizedGuest: true // דגל שציין זה אורח לא מורשה
+                },
+                timestamp: Date.now(),
+                sessionId: this.generateSessionId()
+            };
+            
+            // שמירה ב-localStorage
+            localStorage.setItem('gibushAuthState', JSON.stringify(authState));
+            
+            // המתנה 3 שניות להצגת ההתראה, ואז מעבר לחלון פרטי הקבוצה
+            setTimeout(() => {
+                this.showLoading(false);
+                this.showGroupSetupModal();
+            }, 3000);
+            
+        } catch (error) {
+            console.error('❌ שגיאה בכניסת אורח לא מורשה:', error);
+            this.showError('שגיאה בכניסה כאורח');
+            this.showLoading(false);
+        }
+    }
+
+    /**
+     * טיוטה של escape HTML לחיסיון מ-XSS
+     */
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     /**
